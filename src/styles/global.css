@@ -1,0 +1,40 @@
+/* global.css */
+@import "tailwindcss";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+
+    background: var(--bg-main);
+    color: var(--text-dark);
+
+    /* Classic luxury font */
+
+    font-family: "Playfair Display", serif;
+
+    line-height: 1.6;
+
+}
+
+/* remove link styling */
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* container */
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 0 20px;
+}
+
+.page-container {
+    padding-top: 100px;
+}

@@ -1,0 +1,29 @@
+/* variables.css */
+
+:root {
+
+    /* COLORS */
+
+    --bg-main: #ffffff;
+    --bg-soft: #ffffff;
+    --card-bg: #ffffff;
+
+    --text-dark: #1a1a1a;
+    --text-light: #6b6b6b;
+
+    --accent: #c9184a;
+
+    /* SPACING */
+
+    --space-xs: 8px;
+    --space-sm: 16px;
+    --space-md: 24px;
+    --space-lg: 40px;
+    --space-xl: 80px;
+
+    /* RADIUS */
+
+    --radius-sm: 8px;
+    --radius-md: 14px;
+
+}

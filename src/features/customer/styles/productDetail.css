@@ -1,0 +1,51 @@
+.product-detail {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 80px;
+
+    padding: 120px 80px;
+
+}
+
+.product-detail img {
+
+    width: 100%;
+
+    border-radius: var(--radius-md);
+
+}
+
+.product-detail h1 {
+
+    font-size: 32px;
+
+    margin-bottom: 20px;
+
+}
+
+.product-detail p {
+
+    color: var(--text-light);
+
+    margin-bottom: 20px;
+
+}
+
+.product-detail button {
+
+    background: var(--accent);
+
+    color: white;
+
+    border: none;
+
+    padding: 14px 30px;
+
+    border-radius: var(--radius-sm);
+
+    cursor: pointer;
+
+}
