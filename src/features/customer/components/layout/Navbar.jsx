@@ -1,10 +1,12 @@
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../../../../context/AuthContext";
+import { useCart } from "../../../../context/CartContext";
 import ProfileDropdown from "./ProfileDropdown";
 import "../../styles/navbar.css";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const { cartCount } = useCart();
 
   return (
     <nav className="navbar">
@@ -15,13 +17,15 @@ export default function Navbar() {
 
         <div className="nav-links">
           <NavLink to="/" end>Home</NavLink>
-          <NavLink to="/products">Shop</NavLink>
-          <NavLink to="/products">New Arrivals</NavLink>
-          <NavLink to="/product-details">Best Sellers</NavLink>
+          <NavLink to="/men">Men</NavLink>
+          <NavLink to="/women">Women</NavLink>
+          <NavLink to="/trending">Trending</NavLink>
         </div>
 
         <div className="nav-actions">
-          <span>Cart</span>
+          <NavLink to="/cart" className="nav-cart-btn">
+            Cart {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+          </NavLink>
           {user ? (
             <ProfileDropdown user={user} onLogout={logout} />
           ) : (

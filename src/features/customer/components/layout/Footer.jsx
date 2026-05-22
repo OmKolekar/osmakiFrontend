@@ -44,16 +44,13 @@ export default function Footer() {
           <h3 className="footer-title">Shop</h3>
           <ul className="footer-links">
             <li>
-              <Link to="/products" className="footer-link">All Products</Link>
+              <Link to="/men" className="footer-link">Men</Link>
             </li>
             <li>
-              <Link to="/products" className="footer-link">New Arrivals</Link>
+              <Link to="/women" className="footer-link">Women</Link>
             </li>
             <li>
-              <Link to="/product-details" className="footer-link">Best Sellers</Link>
-            </li>
-            <li>
-              <Link to="/products" className="footer-link">Gift Sets</Link>
+              <Link to="/trending" className="footer-link">Trending</Link>
             </li>
           </ul>
         </div>

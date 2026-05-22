@@ -96,37 +96,41 @@ font-family: "Inter", sans-serif;
     display: inline-block;
 }
 
-/* Avatar button styling */
+/* Avatar button styling - Luxury class */
 .avatar-btn {
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     background: #000000;
     color: #ffffff;
-    border: none;
+    border: 1px solid rgba(0, 0, 0, 0.15);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: none;
+    position: relative;
+    padding: 0;
 }
 
 .avatar-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
-    background: #222222;
+    transform: scale(1.05);
+    background: #ffffff;
+    color: #000000;
+    border-color: #111111;
 }
 
 .avatar-btn:active {
-    transform: translateY(0);
+    transform: scale(0.98);
 }
 
 .avatar-initials {
-    font-family: "Montserrat", sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-family: "Playfair Display", "Didot", "Georgia", serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 /* Dropdown Menu - Glassmorphic */
@@ -161,15 +165,16 @@ font-family: "Inter", sans-serif;
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: #f0f0f0;
-    color: #1a1a1a;
+    background: #faf6f0;
+    color: #111111;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: "Montserrat", sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    border: 1px solid rgba(0, 0, 0, 0.04);
+    font-family: "Playfair Display", "Didot", "Georgia", serif;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .menu-user-meta {
@@ -259,6 +264,34 @@ font-family: "Inter", sans-serif;
     box-shadow: 0 4px 10px rgba(220, 38, 38, 0.15);
 }
 
+/* Admin Panel entry link */
+.menu-admin-btn {
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #111111;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    width: 100%;
+    text-decoration: none;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+}
+
+.menu-admin-btn:hover {
+    background: #111111;
+    color: #ffffff;
+    border-color: #111111;
+}
+
 /* Dropdown slide-down animation */
 @keyframes slideDownFade {
     from {
@@ -271,4 +304,29 @@ font-family: "Inter", sans-serif;
     }
 }
 
-
+/* Cart Button & Badge */
+.nav-cart-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: #000000;
+}
+
+.cart-badge {
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    box-sizing: border-box;
+}
+
+
+

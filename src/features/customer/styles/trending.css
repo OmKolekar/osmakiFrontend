@@ -1,0 +1,69 @@
+/* trending.css */
+
+.trending-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.trending-header {
+    margin-bottom: 50px;
+    text-align: center;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.trending-title {
+    font-size: 36px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+    color: var(--text-dark);
+}
+
+.trending-subtitle {
+    font-family: "Inter", sans-serif;
+    font-size: 15px;
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+.trending-grid-wrapper {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .trending-title {
+        font-size: 28px;
+    }
+    
+    .trending-header {
+        margin-bottom: 30px;
+        padding: 0 15px;
+    }
+}

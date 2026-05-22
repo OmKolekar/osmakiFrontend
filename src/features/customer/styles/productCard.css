@@ -1,13 +1,11 @@
 .product-card {
-
+    display: block;
+    text-decoration: none;
+    color: inherit;
     background: var(--card-bg);
-
     border-radius: var(--radius-md);
-
     overflow: hidden;
-
     transition: all .3s ease;
-
 }
 
 .product-card:hover {

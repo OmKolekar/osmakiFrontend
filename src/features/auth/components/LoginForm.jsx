@@ -22,8 +22,12 @@ export default function LoginForm() {
     setLoading(true);
     setError("");
     try {
-      await login(email, password);
-      navigate("/");
+      const userObj = await login(email, password);
+      if (userObj && userObj.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       setError(err.message || "Invalid email or password");
     } finally {
