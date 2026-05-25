@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Home, Men, Women, Trending, ProductDetail, Cart } from "../features/customer";
 import { Login } from "../features/auth";
-import { AdminLayout, Dashboard, InventoryManager, AddProduct, InventoryLogs } from "../features/admin";
+import { AdminLayout, Dashboard, InventoryManager, AddProduct, InventoryLogs, SectionManager } from "../features/admin";
 import AdminRoute from "./AdminRoute";
 
 export default function AppRoutes() {
@@ -24,6 +24,7 @@ export default function AppRoutes() {
             <Route path="inventory" element={<InventoryManager />} />
             <Route path="add-product" element={<AddProduct />} />
             <Route path="logs" element={<InventoryLogs />} />
+            <Route path="sections" element={<SectionManager />} />
           </Route>
         </Route>
       </Routes>

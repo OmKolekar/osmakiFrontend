@@ -1,87 +1,45 @@
-import { useState, useEffect } from "react";
-import { getAdminProducts, saveAdminProducts, addAdminLog } from "../data/mockDb";
+import { Fragment } from "react";
+import useInventoryManager from "../hooks/useInventoryManager";
 
 export default function InventoryManager() {
-  const [products, setProducts] = useState([]);
-  const [expandedProductId, setExpandedProductId] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterCategory, setFilterCategory] = useState("All");
+  const {
+    loading,
+    error,
+    expandedProductId,
+    toggleExpand,
+    searchTerm,
+    setSearchTerm,
+    filterCategory,
+    setFilterCategory,
+    isModalOpen,
+    setIsModalOpen,
+    adjustTarget,
+    adjustReason,
+    setAdjustReason,
+    adjustQuantity,
+    setAdjustQuantity,
+    adjusting,
+    handleAdjustSubmit,
+    categories,
+    filteredProducts,
+    openAdjustmentModal,
+  } = useInventoryManager();
 
-  // Modal Adjustment State
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [adjustTarget, setAdjustTarget] = useState(null); // { productId, variantId, sku, currentStock, changeType } (+1 or -1)
-  const [adjustReason, setAdjustReason] = useState("Inventory count adjustment");
-  const [adjustQuantity, setAdjustQuantity] = useState(1);
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "400px" }}>
+        <div className="loader-spinner" style={{ margin: "0 auto" }}></div>
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    setProducts(getAdminProducts());
-  }, []);
-
-  const toggleExpand = (productId) => {
-    if (expandedProductId === productId) {
-      setExpandedProductId(null);
-    } else {
-      setExpandedProductId(productId);
-    }
-  };
-
-  // Trigger quick increment/decrement adjustment flow
-  const openAdjustmentModal = (productId, variantId, sku, currentStock, changeDirection) => {
-    setAdjustTarget({ productId, variantId, sku, currentStock, changeDirection });
-    setAdjustQuantity(1);
-    setAdjustReason(changeDirection === "up" ? "Restock replenishment" : "Damaged inventory discard");
-    setIsModalOpen(true);
-  };
-
-  const handleAdjustSubmit = (e) => {
-    e.preventDefault();
-    if (!adjustTarget) return;
-
-    const { productId, variantId, sku, currentStock, changeDirection } = adjustTarget;
-    const finalChange = changeDirection === "up" ? adjustQuantity : -adjustQuantity;
-    const newStock = Math.max(0, currentStock + finalChange);
-
-    // Update product list state
-    const updatedProducts = products.map((product) => {
-      if (product.id === productId) {
-        return {
-          ...product,
-          variants: product.variants.map((v) => {
-            if (v.id === variantId) {
-              return { ...v, stock: newStock };
-            }
-            return v;
-          })
-        };
-      }
-      return product;
-    });
-
-    setProducts(updatedProducts);
-    saveAdminProducts(updatedProducts);
-
-    // Write log entry
-    addAdminLog({
-      variantSku: sku,
-      type: changeDirection === "up" ? "in" : "out",
-      quantity: finalChange,
-      reason: adjustReason
-    });
-
-    setIsModalOpen(false);
-    setAdjustTarget(null);
-  };
-
-  // Filter Categories list
-  const categories = ["All", ...new Set(products.map((p) => p.category))];
-
-  // Filtered Products
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          product.variants.some((v) => v.sku.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesCategory = filterCategory === "All" || product.category === filterCategory;
-    return matchesSearch && matchesCategory;
-  });
+  if (error) {
+    return (
+      <div style={{ padding: "20px", color: "#dc2626", backgroundColor: "#fef2f2", borderRadius: "8px" }}>
+        ⚠️ {error}
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -133,15 +91,18 @@ export default function InventoryManager() {
             ) : (
               filteredProducts.map((product) => {
                 const totalUnits = product.variants?.reduce((sum, v) => sum + v.stock, 0) || 0;
-                const minPrice = product.variants?.reduce((min, v) => v.price < min ? v.price : min, product.variants[0]?.price) || 0;
-                const maxPrice = product.variants?.reduce((max, v) => v.price > max ? v.price : max, product.variants[0]?.price) || 0;
+                
+                // Parse and map variant prices
+                const variantPrices = product.variants?.map((v) => parseFloat(v.price)) || [];
+                const minPrice = variantPrices.length > 0 ? Math.min(...variantPrices) : parseFloat(product.price) || 0;
+                const maxPrice = variantPrices.length > 0 ? Math.max(...variantPrices) : parseFloat(product.price) || 0;
+                
                 const isExpanded = expandedProductId === product.id;
                 const outOfStock = product.variants?.some((v) => v.stock === 0);
 
                 return (
-                  <>
+                  <Fragment key={product.id}>
                     <tr
-                      key={product.id}
                       onClick={() => toggleExpand(product.id)}
                       className="expandable-row"
                     >
@@ -153,7 +114,7 @@ export default function InventoryManager() {
                       <td>
                         <strong>{product.name}</strong>
                       </td>
-                      <td>{product.category}</td>
+                      <td>{product.category ? product.category.name : "Uncategorized"}</td>
                       <td>
                         {minPrice === maxPrice ? `₹${minPrice}` : `₹${minPrice} - ₹${maxPrice}`}
                       </td>
@@ -232,7 +193,7 @@ export default function InventoryManager() {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </Fragment>
                 );
               })
             )}
@@ -289,11 +250,20 @@ export default function InventoryManager() {
             </div>
 
             <div className="modal-actions">
-              <button type="button" onClick={() => setIsModalOpen(false)} className="btn-cancel">
+              <button 
+                type="button" 
+                onClick={() => setIsModalOpen(false)} 
+                className="btn-cancel"
+                disabled={adjusting}
+              >
                 Cancel
               </button>
-              <button type="submit" className="btn-submit">
-                Apply Change
+              <button 
+                type="submit" 
+                className="btn-submit"
+                disabled={adjusting}
+              >
+                {adjusting ? "Applying..." : "Apply Change"}
               </button>
             </div>
           </form>

@@ -1,13 +1,25 @@
-import { useState, useEffect } from "react";
-import { getAdminLogs } from "../data/mockDb";
+import React, { useState } from "react";
+import useInventoryLogs from "../hooks/useInventoryLogs";
 
 export default function InventoryLogs() {
-  const [logs, setLogs] = useState([]);
+  const { logs, loading, error } = useInventoryLogs();
   const [filterType, setFilterType] = useState("All");
 
-  useEffect(() => {
-    setLogs(getAdminLogs());
-  }, []);
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "400px" }}>
+        <div className="loader-spinner" style={{ margin: "0 auto" }}></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ padding: "20px", color: "#dc2626", backgroundColor: "#fef2f2", borderRadius: "8px" }}>
+        ⚠️ {error}
+      </div>
+    );
+  }
 
   const filteredLogs = logs.filter((log) => {
     if (filterType === "All") return true;

@@ -1,7 +1,7 @@
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import ProductCard from "../components/products/ProductCard";
-import Hero from "../components/home/Hero";
+import DynamicSections from "../components/home/DynamicSections";
 import "../styles/home.css";
 import "../styles/product.css";
 
@@ -13,8 +13,8 @@ export default function Home() {
     <div className="home-page">
       <Navbar />
 
-      {/* HERO IMAGE */}
-      <Hero />
+      {/* DYNAMIC SECTIONS */}
+      <DynamicSections />
 
       {/* PRODUCTS */}
       <div className="page-container">

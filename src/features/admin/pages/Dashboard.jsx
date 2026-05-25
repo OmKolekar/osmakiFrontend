@@ -1,48 +1,36 @@
-import { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { getAdminProducts, getAdminLogs } from "../data/mockDb";
+import useDashboard from "../hooks/useDashboard";
 
 export default function Dashboard() {
-  const [products, setProducts] = useState([]);
-  const [logs, setLogs] = useState([]);
+  const { metrics, focusList, recentActivity, loading, error } = useDashboard();
 
-  useEffect(() => {
-    setProducts(getAdminProducts());
-    setLogs(getAdminLogs());
-  }, []);
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "400px" }}>
+        <div className="loader-spinner" style={{ margin: "0 auto" }}></div>
+      </div>
+    );
+  }
 
-  // Compute metrics
-  let totalProductsCount = products.length;
-  let totalStock = 0;
-  let totalValue = 0;
-  let lowStockVariants = [];
-  let outOfStockVariants = [];
+  if (error) {
+    return (
+      <div style={{ padding: "20px", color: "#dc2626", backgroundColor: "#fef2f2", borderRadius: "8px" }}>
+        ⚠️ {error}
+      </div>
+    );
+  }
 
-  products.forEach((product) => {
-    product.variants?.forEach((variant) => {
-      totalStock += variant.stock;
-      totalValue += variant.stock * variant.price;
-
-      if (variant.stock === 0) {
-        outOfStockVariants.push({
-          productName: product.name,
-          ...variant
-        });
-      } else if (variant.stock > 0 && variant.stock <= 10) {
-        lowStockVariants.push({
-          productName: product.name,
-          ...variant
-        });
-      }
-    });
-  });
+  const outOfStockVariants = focusList.outOfStock || [];
+  const lowStockVariants = focusList.lowStock || [];
 
   return (
     <div>
       <div className="admin-header">
         <h1 className="admin-header-title">Overview Dashboard</h1>
         <div style={{ color: "#666", fontSize: "14px", fontFamily: "Inter, sans-serif" }}>
-          Inventory Health Status: <strong style={{ color: outOfStockVariants.length > 0 ? "#dc2626" : "#047857" }}>
+          Inventory Health Status:{" "}
+          <strong style={{ color: outOfStockVariants.length > 0 ? "#dc2626" : "#047857" }}>
             {outOfStockVariants.length > 0 ? "Action Required" : "Healthy"}
           </strong>
         </div>
@@ -52,27 +40,27 @@ export default function Dashboard() {
       <div className="dashboard-grid">
         <div className="stat-card">
           <div className="stat-label">Total Catalog Products</div>
-          <div className="stat-value">{totalProductsCount}</div>
+          <div className="stat-value">{metrics.totalProductsCount}</div>
         </div>
 
         <div className="stat-card">
           <div className="stat-label">Total Units In Stock</div>
-          <div className="stat-value">{totalStock}</div>
+          <div className="stat-value">{metrics.totalStock}</div>
         </div>
 
         <div className="stat-card stat-alert-warning">
           <div className="stat-label" style={{ color: "#d97706" }}>Low Stock Alerts</div>
-          <div className="stat-value" style={{ color: "#d97706" }}>{lowStockVariants.length}</div>
+          <div className="stat-value" style={{ color: "#d97706" }}>{metrics.lowStockCount}</div>
         </div>
 
         <div className="stat-card stat-alert-danger">
           <div className="stat-label" style={{ color: "#dc2626" }}>Out Of Stock</div>
-          <div className="stat-value" style={{ color: "#dc2626" }}>{outOfStockVariants.length}</div>
+          <div className="stat-value" style={{ color: "#dc2626" }}>{metrics.outOfStockCount}</div>
         </div>
 
         <div className="stat-card">
           <div className="stat-label">Total Valuation (INR)</div>
-          <div className="stat-value">₹{totalValue.toLocaleString()}</div>
+          <div className="stat-value">₹{metrics.totalValuation.toLocaleString()}</div>
         </div>
       </div>
 
@@ -99,7 +87,7 @@ export default function Dashboard() {
                       <td>
                         <strong>{item.productName}</strong>
                         <div style={{ fontSize: "12px", color: "#666" }}>
-                          Size: {item.size} / Color: {item.color}
+                          Size: {item.size || "-"} / Color: {item.color || "-"}
                         </div>
                       </td>
                       <td><code>{item.sku}</code></td>
@@ -114,7 +102,7 @@ export default function Dashboard() {
                       <td>
                         <strong>{item.productName}</strong>
                         <div style={{ fontSize: "12px", color: "#666" }}>
-                          Size: {item.size} / Color: {item.color}
+                          Size: {item.size || "-"} / Color: {item.color || "-"}
                         </div>
                       </td>
                       <td><code>{item.sku}</code></td>
@@ -139,11 +127,11 @@ export default function Dashboard() {
         <div>
           <div className="admin-card">
             <div className="admin-card-title">Recent Inventory Activity</div>
-            {logs.length === 0 ? (
+            {recentActivity.length === 0 ? (
               <p style={{ color: "#666", fontSize: "14px" }}>No recent log movements recorded.</p>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-                {logs.slice(0, 5).map((log) => {
+                {recentActivity.slice(0, 5).map((log) => {
                   const isPositive = log.type === "in" || (log.type === "adjustment" && log.quantity > 0);
                   const isDanger = log.type === "out" || (log.type === "adjustment" && log.quantity < 0);
                   return (
