@@ -1,0 +1,43 @@
+import { cartApi } from "../api/cartApi";
+
+export const cartService = {
+  getCart: async (userId) => {
+    const dbItems = await cartApi.getCart(userId);
+    if (!Array.isArray(dbItems)) return [];
+    
+    return dbItems.map((item) => {
+      const variant = item.variant;
+      const product = variant?.product;
+      const variantImage = variant?.images?.[0]?.imageUrl || "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd";
+      
+      return {
+        id: variant?.id || item.id,
+        productId: product?.id,
+        name: product?.name || "Product",
+        price: parseFloat(variant?.price || product?.price || 0),
+        quantity: item.quantity,
+        image: variantImage,
+        brand: product?.brand || "OSMAKI",
+        selectedColor: variant?.color || "",
+        selectedSize: variant?.size || "",
+        sku: variant?.sku || null,
+      };
+    });
+  },
+
+  addToCart: async (userId, variantId, quantity) => {
+    return await cartApi.addToCart(userId, variantId, quantity);
+  },
+
+  updateQuantity: async (userId, variantId, quantity) => {
+    return await cartApi.updateQuantity(userId, variantId, quantity);
+  },
+
+  removeFromCart: async (userId, variantId) => {
+    return await cartApi.removeFromCart(userId, variantId);
+  },
+
+  clearCart: async (userId) => {
+    return await cartApi.clearCart(userId);
+  }
+};

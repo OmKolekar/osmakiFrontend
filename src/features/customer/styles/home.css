@@ -63,20 +63,53 @@
 }
 
 .hero-btn {
-
     background: white;
-
     color: black;
-
     padding: 12px 28px;
-
     border: none;
-
     border-radius: 6px;
-
     cursor: pointer;
-
     font-weight: 500;
+}
 
+@media (max-width: 900px) {
+  .hero-image {
+    height: 450px;
+  }
+  
+  .hero-content {
+    left: 40px;
+    max-width: 350px;
+  }
+  
+  .hero-content h1 {
+    font-size: 48px;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-image {
+    height: 350px;
+  }
+  
+  .hero-content {
+    left: 20px;
+    right: 20px;
+    max-width: 100%;
+    text-align: center;
+  }
+  
+  .hero-content h1 {
+    font-size: 36px;
+  }
+  
+  .hero-btn {
+    padding: 10px 24px;
+    font-size: 14px;
+  }
+}
+
+.home-page .page-container {
+  padding-top: 0;
 }
 

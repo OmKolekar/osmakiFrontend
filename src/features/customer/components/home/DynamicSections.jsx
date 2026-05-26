@@ -1,31 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { apiClient } from "../../../../api/apiClient";
+import { usePageSections } from "../../hooks/usePageSections";
 import Hero from "./Hero";
 import "../../styles/dynamicSections.css";
 
 export default function DynamicSections() {
-  const [sections, setSections] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { sections, loading } = usePageSections("home");
   const [subscribedEmail, setSubscribedEmail] = useState("");
   const [subscribedMessage, setSubscribedMessage] = useState("");
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetchSections() {
-      try {
-        const data = await apiClient.get("/api/page-sections?page=home");
-        // Ensure it's an array and sort by displayOrder
-        if (Array.isArray(data)) {
-          setSections(data);
-        }
-      } catch (err) {
-        console.error("Failed to load page sections:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchSections();
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const handleSubscribe = (e) => {
@@ -114,11 +103,16 @@ export default function DynamicSections() {
                   onClick={() => handleNavigation(section)}
                   style={{ cursor: section.buttonText ? "default" : "pointer" }}
                 >
-                  <img
-                    src={section.desktopImage}
-                    alt={section.imageAltText || section.title || "Promotion banner"}
-                    className="banner-bg-img"
-                  />
+                  <picture className="banner-picture">
+                    {section.mobileImage && (
+                      <source media="(max-width: 768px)" srcSet={section.mobileImage} />
+                    )}
+                    <img
+                      src={section.desktopImage}
+                      alt={section.imageAltText || section.title || "Promotion banner"}
+                      className="banner-bg-img"
+                    />
+                  </picture>
                   <div className={`banner-content ${textAlignClass} ${isDarkText ? "text-dark" : "text-light"}`}>
                     {section.title && <h2 className="banner-title">{section.title}</h2>}
                     {section.subtitle && <p className="banner-subtitle">{section.subtitle}</p>}
@@ -133,13 +127,14 @@ export default function DynamicSections() {
             );
 
           case "newsletter":
+            const newsletterBg = (isMobile && section.mobileImage) ? section.mobileImage : section.desktopImage;
             return (
               <section 
                 key={section.id} 
                 className="dynamic-newsletter-section"
                 style={
-                  section.desktopImage 
-                    ? { backgroundImage: `url(${section.desktopImage})` } 
+                  newsletterBg 
+                    ? { backgroundImage: `url(${newsletterBg})` } 
                     : undefined
                 }
               >

@@ -1,7 +1,7 @@
 import './App.css';
 import AppRoutes from "./routes/AppRoutes";
 import { AuthProvider } from "./context/AuthContext";
-import { CartProvider } from "./context/CartContext";
+import { CartProvider } from "./features/customer/context/CartContext";
 
 function App() {
   return (
