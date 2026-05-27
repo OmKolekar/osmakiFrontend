@@ -13,13 +13,14 @@ export function useAddProduct() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [basePrice, setBasePrice] = useState("");
+  const [discountPrice, setDiscountPrice] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [gender, setGender] = useState("Unisex");
   const [brand, setBrand] = useState("");
 
   // Variants Array
   const [variants, setVariants] = useState([
-    { id: "v_init_1", sku: "", size: "", color: "", price: "", stock: 0, files: [] }
+    { id: "v_init_1", sku: "", size: "", color: "", price: "", discountPrice: "", stock: 0, files: [] }
   ]);
 
   const [errorMsg, setErrorMsg] = useState("");
@@ -48,7 +49,7 @@ export function useAddProduct() {
   const handleAddVariantRow = () => {
     setVariants([
       ...variants,
-      { id: "v_temp_" + Date.now() + Math.random(), sku: "", size: "", color: "", price: "", stock: 0, files: [] }
+      { id: "v_temp_" + Date.now() + Math.random(), sku: "", size: "", color: "", price: "", discountPrice: "", stock: 0, files: [] }
     ]);
   };
 
@@ -88,6 +89,7 @@ export function useAddProduct() {
         name,
         description,
         basePrice,
+        discountPrice,
         categoryId,
         gender,
         brand,
@@ -115,6 +117,8 @@ export function useAddProduct() {
     setDescription,
     basePrice,
     setBasePrice,
+    discountPrice,
+    setDiscountPrice,
     categoryId,
     setCategoryId,
     gender,

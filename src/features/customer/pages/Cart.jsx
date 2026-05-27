@@ -99,7 +99,14 @@ export default function Cart() {
                       </button>
                     </div>
 
-                    <p className="cart-item-price">₹{item.price * item.quantity}</p>
+                    <div className="cart-item-price-container" style={{ textAlign: "right" }}>
+                      <p className="cart-item-price" style={{ margin: 0 }}>₹{item.price * item.quantity}</p>
+                      {item.originalPrice && parseFloat(item.originalPrice) > parseFloat(item.price) && (
+                        <span style={{ fontSize: "12px", textDecoration: "line-through", color: "#888", display: "block", marginTop: "2px" }}>
+                          ₹{item.originalPrice * item.quantity}
+                        </span>
+                      )}
+                    </div>
 
                     <button
                       className="cart-item-remove-btn"

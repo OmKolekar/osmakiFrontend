@@ -18,7 +18,7 @@ export default function Navbar() {
       )}
       <div className="navbar-inner">
         <Link to="/" className="nav-logo" onClick={() => setIsMenuOpen(false)}>
-          OSMAKI
+          𝓞SMAKÌ
         </Link>
 
         {/* Hamburger Menu Trigger */}

@@ -10,6 +10,8 @@ export default function AddProduct() {
     setDescription,
     basePrice,
     setBasePrice,
+    discountPrice,
+    setDiscountPrice,
     categoryId,
     setCategoryId,
     gender,
@@ -72,7 +74,7 @@ export default function AddProduct() {
             />
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "20px" }}>
             <div className="form-group">
               <label className="form-label">Base Price (INR) *</label>
               <input
@@ -82,6 +84,18 @@ export default function AddProduct() {
                 disabled={isSubmitting}
                 value={basePrice}
                 onChange={(e) => setBasePrice(e.target.value)}
+                className="form-input"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Discount Price (INR)</label>
+              <input
+                type="number"
+                placeholder="₹ Discount Price"
+                disabled={isSubmitting}
+                value={discountPrice}
+                onChange={(e) => setDiscountPrice(e.target.value)}
                 className="form-input"
               />
             </div>
@@ -150,7 +164,7 @@ export default function AddProduct() {
             {/* Column Label Headers */}
             <div style={{
               display: "grid",
-              gridTemplateColumns: "1.2fr 0.8fr 0.8fr 1fr 1fr 1.8fr 40px",
+              gridTemplateColumns: "1.2fr 0.8fr 0.8fr 1fr 1fr 1fr 1.8fr 40px",
               gap: "12px",
               padding: "0 16px 8px 16px",
               fontSize: "11px",
@@ -164,6 +178,7 @@ export default function AddProduct() {
               <div>Size</div>
               <div>Color</div>
               <div>Price override</div>
+              <div>Discount override</div>
               <div>Initial Stock</div>
               <div>Image Upload</div>
               <div></div>
@@ -205,6 +220,15 @@ export default function AddProduct() {
                   disabled={isSubmitting}
                   value={v.price}
                   onChange={(e) => handleVariantChange(v.id, "price", e.target.value)}
+                  className="form-input"
+                  style={{ padding: "8px 12px", fontSize: "13px" }}
+                />
+                <input
+                  type="number"
+                  placeholder="Discount"
+                  disabled={isSubmitting}
+                  value={v.discountPrice || ""}
+                  onChange={(e) => handleVariantChange(v.id, "discountPrice", e.target.value)}
                   className="form-input"
                   style={{ padding: "8px 12px", fontSize: "13px" }}
                 />

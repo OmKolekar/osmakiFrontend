@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import PriceDisplay from "./PriceDisplay";
 import "../../styles/productCard.css";
 
 export default function ProductCard({ product }) {
@@ -9,7 +10,7 @@ export default function ProductCard({ product }) {
       <div className="product-info">
         <h3 className="product-name">{product.name}</h3>
 
-        <p className="product-price">₹{product.price}</p>
+        <PriceDisplay price={product.price} discountPrice={product.discountPrice} size="sm" />
       </div>
     </Link>
   );

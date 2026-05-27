@@ -4,6 +4,7 @@ import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import { useCart } from "../context/CartContext";
 import { useProductDetail } from "../hooks/useProductDetail";
+import PriceDisplay from "../components/products/PriceDisplay";
 import "../styles/productDetail.css";
 
 export default function ProductDetail() {
@@ -19,10 +20,7 @@ export default function ProductDetail() {
   const [selectedSize, setSelectedSize] = useState("");
 
   const [openTab, setOpenTab] = useState("description"); // Default open tab
-  const [zoomStyle, setZoomStyle] = useState({
-    transformOrigin: "center center",
-    transform: "scale(1)",
-  });
+
 
   // Set default active image when product changes
   useEffect(() => {
@@ -56,6 +54,19 @@ export default function ProductDetail() {
       }
     }
   }, [selectedColor, product]);
+
+  const activeVariant = product?.variants?.find(
+    v => v.color === selectedColor && v.size === selectedSize
+  );
+
+  // Reset active image when selected variant changes
+  useEffect(() => {
+    if (activeVariant && activeVariant.images && activeVariant.images.length > 0) {
+      setActiveImage(activeVariant.images[0].imageUrl);
+    } else {
+      setActiveImage("");
+    }
+  }, [selectedColor, selectedSize, activeVariant]);
 
   if (loading) {
     return (
@@ -97,17 +108,20 @@ export default function ProductDetail() {
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - left) / width) * 100;
     const y = ((e.clientY - top) / height) * 100;
-    setZoomStyle({
-      transformOrigin: `${x}% ${y}%`,
-      transform: "scale(1.8)",
-    });
+    
+    const img = e.currentTarget.querySelector(".main-image");
+    if (img) {
+      img.style.transformOrigin = `${x}% ${y}%`;
+      img.style.transform = "scale(1.8)";
+    }
   };
 
-  const handleMouseLeave = () => {
-    setZoomStyle({
-      transformOrigin: "center center",
-      transform: "scale(1)",
-    });
+  const handleMouseLeave = (e) => {
+    const img = e.currentTarget.querySelector(".main-image");
+    if (img) {
+      img.style.transformOrigin = "center center";
+      img.style.transform = "scale(1)";
+    }
   };
 
   const toggleTab = (tabName) => {
@@ -118,13 +132,14 @@ export default function ProductDetail() {
   const colors = product.variants ? [...new Set(product.variants.map(v => v.color).filter(Boolean))] : [];
   const sizes = product.variants ? [...new Set(product.variants.map(v => v.size).filter(Boolean))] : [];
 
-  const activeVariant = product.variants?.find(
-    v => v.color === selectedColor && v.size === selectedSize
-  );
 
   const displayPrice = activeVariant && activeVariant.price 
     ? parseFloat(activeVariant.price) 
     : product.price;
+
+  const displayDiscountPrice = activeVariant && activeVariant.discountPrice 
+    ? parseFloat(activeVariant.discountPrice) 
+    : product.discountPrice;
 
   const displayStock = activeVariant ? activeVariant.stock : 0;
 
@@ -146,7 +161,8 @@ export default function ProductDetail() {
       ...product,
       id: activeVariant ? activeVariant.id : product.id,
       productId: product.id,
-      price: displayPrice,
+      price: displayDiscountPrice && displayDiscountPrice < displayPrice ? displayDiscountPrice : displayPrice,
+      originalPrice: displayPrice,
       selectedColor,
       selectedSize,
       sku: activeVariant ? activeVariant.sku : null,
@@ -154,7 +170,11 @@ export default function ProductDetail() {
     addToCart(cartProduct, quantity);
   };
 
-  const currentImage = activeImage || product.image || "";
+  const activeVariantImages = activeVariant?.images?.map(img => img.imageUrl) || [];
+  const displayImages = activeVariantImages.length > 0 ? activeVariantImages : (product.images || []);
+  const currentImage = activeImage || (displayImages.length > 0 ? displayImages[0] : product.image || "");
+
+
 
   return (
     <div className="product-detail-page">
@@ -165,7 +185,7 @@ export default function ProductDetail() {
           {/* Image Gallery Section */}
           <div className="image-gallery-section">
             <div className="thumbnail-list">
-              {product.images?.map((img, index) => (
+              {displayImages.map((img, index) => (
                 <button
                    key={index}
                    className={`thumbnail-button ${currentImage === img ? "active" : ""}`}
@@ -185,7 +205,6 @@ export default function ProductDetail() {
                 src={currentImage}
                 alt={product.name}
                 className="main-image"
-                style={zoomStyle}
               />
             </div>
           </div>
@@ -197,7 +216,9 @@ export default function ProductDetail() {
                 Home / {product.gender || "Catalog"}
               </span>
               <h1 className="product-title">{product.name}</h1>
-              <p className="product-price">₹{displayPrice}</p>
+              <div style={{ margin: "15px 0" }}>
+                <PriceDisplay price={displayPrice} discountPrice={displayDiscountPrice} size="lg" />
+              </div>
               <p className="product-description">{product.description}</p>
             </div>
 

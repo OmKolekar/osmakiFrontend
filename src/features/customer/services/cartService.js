@@ -10,11 +10,32 @@ export const cartService = {
       const product = variant?.product;
       const variantImage = variant?.images?.[0]?.imageUrl || "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd";
       
+      const getActivePrice = (v, p) => {
+        if (v) {
+          const vPrice = parseFloat(v.price) || 0;
+          const vDisc = v.discountPrice ? parseFloat(v.discountPrice) : null;
+          if (vDisc !== null && vDisc > 0 && vDisc < vPrice) return vDisc;
+          return vPrice;
+        }
+        if (p) {
+          const pPrice = parseFloat(p.price) || 0;
+          const pDisc = p.discountPrice ? parseFloat(p.discountPrice) : null;
+          if (pDisc !== null && pDisc > 0 && pDisc < pPrice) return pDisc;
+          return pPrice;
+        }
+        return 0;
+      };
+
+      const getOriginalPrice = (v, p) => {
+        return parseFloat(v?.price || p?.price || 0);
+      };
+
       return {
         id: variant?.id || item.id,
         productId: product?.id,
         name: product?.name || "Product",
-        price: parseFloat(variant?.price || product?.price || 0),
+        price: getActivePrice(variant, product),
+        originalPrice: getOriginalPrice(variant, product),
         quantity: item.quantity,
         image: variantImage,
         brand: product?.brand || "OSMAKI",

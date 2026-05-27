@@ -6,7 +6,20 @@ const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
   const { user } = useAuth();
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    const savedUser = localStorage.getItem("osmaki_user");
+    if (!savedUser) {
+      const savedCart = localStorage.getItem("osmaki_cart");
+      if (savedCart) {
+        try {
+          return JSON.parse(savedCart);
+        } catch (err) {
+          console.error("Failed to parse saved cart on init:", err);
+        }
+      }
+    }
+    return [];
+  });
   const [loading, setLoading] = useState(false);
 
   // Sync / Load cart depending on user status

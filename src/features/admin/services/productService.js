@@ -13,10 +13,16 @@ export const productService = {
 
     // 1. Loop through variants and sequentially upload their images
     for (const variant of variants) {
-      let imageUrl = null;
+      const imageUrls = [];
       if (variant.files && variant.files.length > 0) {
-        // Upload the selected image (using the first file if multiple were selected)
-        imageUrl = await productApi.uploadImage(variant.files[0]);
+        for (const file of variant.files) {
+          try {
+            const url = await productApi.uploadImage(file);
+            if (url) imageUrls.push(url);
+          } catch (err) {
+            console.error("Failed to upload image:", err);
+          }
+        }
       }
 
       processedVariants.push({
@@ -24,8 +30,10 @@ export const productService = {
         size: variant.size?.trim() || null,
         color: variant.color?.trim() || null,
         price: parseFloat(variant.price) || parseFloat(productForm.basePrice) || 0,
+        discountPrice: parseFloat(variant.discountPrice) || null,
         stock: parseInt(variant.stock) || 0,
-        imageUrl: imageUrl,
+        imageUrl: imageUrls.length > 0 ? imageUrls[0] : null,
+        imageUrls: imageUrls,
       });
     }
 
@@ -34,6 +42,7 @@ export const productService = {
       name: productForm.name.trim(),
       description: productForm.description?.trim() || "",
       price: parseFloat(productForm.basePrice) || 0,
+      discountPrice: parseFloat(productForm.discountPrice) || null,
       categoryId: productForm.categoryId || null,
       gender: productForm.gender || "Unisex",
       brand: productForm.brand?.trim() || null,
