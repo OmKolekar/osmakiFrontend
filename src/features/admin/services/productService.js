@@ -46,6 +46,9 @@ export const productService = {
       categoryId: productForm.categoryId || null,
       gender: productForm.gender || "Unisex",
       brand: productForm.brand?.trim() || null,
+      isTrending: productForm.isTrending || false,
+      isFeatured: productForm.isFeatured || false,
+      isBestSeller: productForm.isBestSeller || false,
       variants: processedVariants,
     };
 

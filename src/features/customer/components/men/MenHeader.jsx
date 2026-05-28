@@ -1,5 +1,13 @@
+import React from "react";
+import { usePageSections } from "../../hooks/usePageSections";
+import HeroSlider from "../shared/HeroSlider";
+
 export default function MenHeader() {
-  return (
+  const { sections, loading } = usePageSections("men");
+
+  const heroSections = sections.filter((s) => s.sectionType === "hero");
+
+  const fallback = (
     <section className="category-hero">
       <img
         src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf"
@@ -16,4 +24,14 @@ export default function MenHeader() {
       </div>
     </section>
   );
+
+  if (loading) {
+    return (
+      <div className="collection-loader" style={{ textAlign: "center", padding: "45px" }}>
+        <div className="loader-spinner" style={{ margin: "0 auto" }}></div>
+      </div>
+    );
+  }
+
+  return <HeroSlider sections={heroSections} fallback={fallback} />;
 }

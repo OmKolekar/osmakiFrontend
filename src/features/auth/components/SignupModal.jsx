@@ -72,8 +72,8 @@ export default function SignupModal({ isOpen, onClose }) {
     e.preventDefault();
     if (transitioning) return;
     if (stage !== "register") return;
-    if (!name || !password) {
-      setError("Name and password are required");
+    if (!name || !password || !phone) {
+      setError("Name, password, and phone number are required");
       return;
     }
     setLoading(true);
@@ -232,10 +232,11 @@ export default function SignupModal({ isOpen, onClose }) {
               <div className="input-group animate-slide-down">
                 <input
                   type="tel"
-                  placeholder="Phone number (optional)"
+                  placeholder="Phone number"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="modal-input"
+                  required
                   disabled={loading}
                   autoComplete="tel"
                 />

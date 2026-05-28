@@ -18,6 +18,11 @@ export function useAddProduct() {
   const [gender, setGender] = useState("Unisex");
   const [brand, setBrand] = useState("");
 
+  // Promotion Toggles
+  const [isTrending, setIsTrending] = useState(false);
+  const [isFeatured, setIsFeatured] = useState(false);
+  const [isBestSeller, setIsBestSeller] = useState(false);
+
   // Variants Array
   const [variants, setVariants] = useState([
     { id: "v_init_1", sku: "", size: "", color: "", price: "", discountPrice: "", stock: 0, files: [] }
@@ -93,6 +98,9 @@ export function useAddProduct() {
         categoryId,
         gender,
         brand,
+        isTrending,
+        isFeatured,
+        isBestSeller,
       };
 
       await productService.saveProduct(productForm, variants);
@@ -129,6 +137,12 @@ export function useAddProduct() {
     errorMsg,
     successMsg,
     isSubmitting,
+    isTrending,
+    setIsTrending,
+    isFeatured,
+    setIsFeatured,
+    isBestSeller,
+    setIsBestSeller,
     handleAddVariantRow,
     handleRemoveVariantRow,
     handleVariantChange,

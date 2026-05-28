@@ -17,6 +17,10 @@ export function useInventoryManager() {
   const [adjustQuantity, setAdjustQuantity] = useState(1);
   const [adjusting, setAdjusting] = useState(false);
 
+  // Edit Product Modal State
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -96,6 +100,35 @@ export function useInventoryManager() {
     }
   };
 
+  const openEditModal = (product) => {
+    setEditingProduct(product);
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setEditingProduct(null);
+    setIsEditModalOpen(false);
+  };
+
+  const handleEditSave = (updatedProduct) => {
+    setProducts((prevProducts) =>
+      prevProducts.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+    );
+    closeEditModal();
+  };
+
+  const handleDeleteProduct = async (productId, productName) => {
+    if (window.confirm(`Are you sure you want to permanently delete the product "${productName}" and all its variants/inventory history?`)) {
+      try {
+        await productApi.deleteProduct(productId);
+        setProducts((prevProducts) => prevProducts.filter((p) => p.id !== productId));
+      } catch (err) {
+        console.error("Failed to delete product:", err);
+        alert(err.message || "Failed to delete product.");
+      }
+    }
+  };
+
   // Memoized categories list derived dynamically
   const categories = useMemo(() => {
     const list = new Set();
@@ -142,6 +175,13 @@ export function useInventoryManager() {
     handleAdjustSubmit,
     categories,
     filteredProducts,
+    openAdjustmentModal,
+    isEditModalOpen,
+    editingProduct,
+    openEditModal,
+    closeEditModal,
+    handleEditSave,
+    handleDeleteProduct,
   };
 }
 

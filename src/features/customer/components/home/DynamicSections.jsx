@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { usePageSections } from "../../hooks/usePageSections";
 import Hero from "./Hero";
+import HeroSlider from "../shared/HeroSlider";
 import "../../styles/dynamicSections.css";
 
 export default function DynamicSections() {
@@ -55,46 +56,19 @@ export default function DynamicSections() {
     );
   }
 
-  // If there are no dynamic sections defined in the DB yet,
-  // fallback to the default static Hero component so the home page is not empty.
-  if (sections.length === 0) {
-    return <Hero />;
-  }
+  const heroSections = sections.filter((s) => s.sectionType === "hero");
+  const otherSections = sections.filter((s) => s.sectionType !== "hero");
 
   return (
     <div className="dynamic-sections-container">
-      {sections.map((section) => {
+      <HeroSlider sections={heroSections} fallback={<Hero />} />
+
+      {otherSections.map((section) => {
         const isDarkText = section.textColor === "dark";
         const textAlignClass = `text-${section.textAlign || "center"}`;
         const targetLink = getTargetLink(section);
 
         switch (section.sectionType) {
-          case "hero":
-            return (
-              <section key={section.id} className="dynamic-hero">
-                <picture className="hero-picture">
-                  {section.mobileImage && (
-                    <source media="(max-width: 768px)" srcSet={section.mobileImage} />
-                  )}
-                  <img
-                    src={section.desktopImage || "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519"}
-                    alt={section.imageAltText || section.title || "Hero banner"}
-                    className="hero-img"
-                  />
-                </picture>
-
-                <div className={`hero-overlay ${textAlignClass} ${isDarkText ? "text-dark" : "text-light"}`}>
-                  {section.title && <h1 className="hero-title">{section.title}</h1>}
-                  {section.subtitle && <p className="hero-subtitle">{section.subtitle}</p>}
-                  {section.buttonText && (
-                    <button onClick={() => handleNavigation(section)} className="hero-action-btn">
-                      {section.buttonText}
-                    </button>
-                  )}
-                </div>
-              </section>
-            );
-
           case "banner":
             return (
               <section key={section.id} className="dynamic-banner-section">

@@ -147,6 +147,9 @@ export default function SectionFormModal({
                 disabled={isSubmitting}
               >
                 <option value="home">Home Page</option>
+                <option value="men">Men's Category Page</option>
+                <option value="women">Women's Category Page</option>
+                <option value="trending">Trending Page</option>
                 <option value="shop">Shop Page</option>
               </select>
             </div>

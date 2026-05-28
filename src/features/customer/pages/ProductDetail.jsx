@@ -14,6 +14,8 @@ export default function ProductDetail() {
   const { product, loading, error } = useProductDetail(id);
   const [activeImage, setActiveImage] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [prevImage, setPrevImage] = useState("");
   
   // Selected variant state
   const [selectedColor, setSelectedColor] = useState("");
@@ -174,6 +176,12 @@ export default function ProductDetail() {
   const displayImages = activeVariantImages.length > 0 ? activeVariantImages : (product.images || []);
   const currentImage = activeImage || (displayImages.length > 0 ? displayImages[0] : product.image || "");
 
+  // Sync state during rendering to prevent race conditions with multiple initial renders
+  if (currentImage !== prevImage) {
+    setPrevImage(currentImage);
+    setImageLoaded(false);
+  }
+
 
 
   return (
@@ -204,7 +212,8 @@ export default function ProductDetail() {
               <img
                 src={currentImage}
                 alt={product.name}
-                className="main-image"
+                className={`main-image ${imageLoaded ? "loaded" : "not-loaded"}`}
+                onLoad={() => setImageLoaded(true)}
               />
             </div>
           </div>

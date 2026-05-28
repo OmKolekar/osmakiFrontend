@@ -22,6 +22,12 @@ export default function AddProduct() {
     errorMsg,
     successMsg,
     isSubmitting,
+    isTrending,
+    setIsTrending,
+    isFeatured,
+    setIsFeatured,
+    isBestSeller,
+    setIsBestSeller,
     handleAddVariantRow,
     handleRemoveVariantRow,
     handleVariantChange,
@@ -143,6 +149,44 @@ export default function AddProduct() {
               <option value="Men">Men</option>
               <option value="Women">Women</option>
             </select>
+          </div>
+
+          <div className="form-group" style={{ gridColumn: "span 3" }}>
+            <label className="form-label">Promotional & Catalog Tags</label>
+            <div style={{ display: "flex", gap: "24px", marginTop: "12px", alignItems: "center" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "14px", fontWeight: "500", userSelect: "none" }}>
+                <input
+                  type="checkbox"
+                  disabled={isSubmitting}
+                  checked={isBestSeller}
+                  onChange={(e) => setIsBestSeller(e.target.checked)}
+                  style={{ width: "18px", height: "18px", accentColor: "#111", cursor: "pointer" }}
+                />
+                Best Seller
+              </label>
+
+              <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "14px", fontWeight: "500", userSelect: "none" }}>
+                <input
+                  type="checkbox"
+                  disabled={isSubmitting}
+                  checked={isTrending}
+                  onChange={(e) => setIsTrending(e.target.checked)}
+                  style={{ width: "18px", height: "18px", accentColor: "#111", cursor: "pointer" }}
+                />
+                Trending
+              </label>
+
+              <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "14px", fontWeight: "500", userSelect: "none" }}>
+                <input
+                  type="checkbox"
+                  disabled={isSubmitting}
+                  checked={isFeatured}
+                  onChange={(e) => setIsFeatured(e.target.checked)}
+                  style={{ width: "18px", height: "18px", accentColor: "#111", cursor: "pointer" }}
+                />
+                Featured
+              </label>
+            </div>
           </div>
 
           {/* Variants section */}

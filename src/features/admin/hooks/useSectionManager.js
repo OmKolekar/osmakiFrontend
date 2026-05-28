@@ -47,6 +47,22 @@ export function useSectionManager() {
   };
 
   const handleToggleActive = async (section) => {
+    setErrorMsg("");
+    if (!section.isActive && section.sectionType === "hero") {
+      const activeHeroesForPage = sections.filter(
+        (s) =>
+          s.page === section.page &&
+          s.sectionType === "hero" &&
+          s.isActive &&
+          s.id !== section.id
+      );
+      if (activeHeroesForPage.length >= 5) {
+        setErrorMsg(`A storefront page can have at most 5 active Hero banners.`);
+        setTimeout(() => setErrorMsg(""), 3000);
+        return;
+      }
+    }
+
     try {
       await sectionApi.updateSection(section.id, {
         isActive: !section.isActive,
@@ -92,6 +108,22 @@ export function useSectionManager() {
     setIsSubmitting(true);
     setErrorMsg("");
     setSuccessMsg("");
+
+    // Enforce max 5 active hero banner sections per page
+    if (sectionData.sectionType === "hero" && sectionData.isActive) {
+      const activeHeroesForPage = sections.filter(
+        (s) =>
+          s.page === sectionData.page &&
+          s.sectionType === "hero" &&
+          s.isActive &&
+          s.id !== (editingSection ? editingSection.id : null)
+      );
+      if (activeHeroesForPage.length >= 5) {
+        setErrorMsg(`A storefront page can have at most 5 active Hero banners.`);
+        setIsSubmitting(false);
+        return;
+      }
+    }
 
     try {
       await sectionService.saveSection(

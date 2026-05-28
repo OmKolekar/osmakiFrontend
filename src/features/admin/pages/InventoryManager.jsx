@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import useInventoryManager from "../hooks/useInventoryManager";
+import EditProductModal from "../components/EditProductModal";
 
 export default function InventoryManager() {
   const {
@@ -23,6 +24,12 @@ export default function InventoryManager() {
     categories,
     filteredProducts,
     openAdjustmentModal,
+    isEditModalOpen,
+    editingProduct,
+    openEditModal,
+    closeEditModal,
+    handleEditSave,
+    handleDeleteProduct,
   } = useInventoryManager();
 
   if (loading) {
@@ -79,6 +86,7 @@ export default function InventoryManager() {
               <th>Variants Count</th>
               <th>Total Units</th>
               <th>Catalog Status</th>
+              <th style={{ width: "130px", textAlign: "right" }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -127,11 +135,27 @@ export default function InventoryManager() {
                           <span className="badge badge-success">Fully Active</span>
                         )}
                       </td>
+                      <td style={{ textAlign: "right" }} onClick={(e) => e.stopPropagation()}>
+                        <button
+                          onClick={() => openEditModal(product)}
+                          className="action-link-btn"
+                          style={{ marginRight: "12px", color: "#111111", textDecoration: "underline" }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteProduct(product.id, product.name)}
+                          className="action-link-btn"
+                          style={{ color: "#dc2626", textDecoration: "underline" }}
+                        >
+                          Delete
+                        </button>
+                      </td>
                     </tr>
 
                     {isExpanded && (
                       <tr className="variants-dropdown-row">
-                        <td colSpan="7">
+                        <td colSpan="8">
                           <div className="variants-table-container">
                             <table className="variants-table">
                               <thead>
@@ -269,6 +293,14 @@ export default function InventoryManager() {
           </form>
         </div>
       )}
+
+      {/* Edit Product Modal */}
+      <EditProductModal
+        isOpen={isEditModalOpen}
+        product={editingProduct}
+        onClose={closeEditModal}
+        onSave={handleEditSave}
+      />
     </div>
   );
 }
