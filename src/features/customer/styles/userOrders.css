@@ -1,0 +1,328 @@
+/* userOrders.css */
+
+.user-orders-page {
+  padding-top: 140px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #F9F8F6; /* Luxury warm linen background */
+}
+
+.user-orders-container {
+  max-width: 1000px;
+  margin: 0 auto 80px auto;
+  padding: 0 40px;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.orders-page-title {
+  font-family: "Playfair Display", serif;
+  font-size: 38px;
+  font-weight: 600;
+  color: #111111;
+  margin: 0 0 8px 0;
+}
+
+.orders-page-subtitle {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: #777777;
+  margin: 0 0 40px 0;
+}
+
+/* Loading, Error, Empty views */
+.orders-loading-view, .orders-error-view, .orders-empty-view {
+  text-align: center;
+  padding: 80px 40px;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #ECECEC;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.01);
+}
+
+.orders-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #111;
+  border-radius: 50%;
+  margin: 0 auto 16px auto;
+  animation: spin 1s linear infinite;
+}
+
+.retry-btn {
+  background: #111;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-family: "Inter", sans-serif;
+  cursor: pointer;
+  margin-top: 14px;
+}
+
+.empty-box-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.orders-empty-view h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 24px;
+  margin: 0 0 10px 0;
+}
+
+.orders-empty-view p {
+  font-family: "Inter", sans-serif;
+  color: #666;
+  font-size: 14px;
+  margin: 0 auto 24px auto;
+  max-width: 400px;
+  line-height: 1.5;
+}
+
+.browse-shop-btn {
+  display: inline-block;
+  background: #111111;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 14px 32px;
+  border-radius: 999px;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Orders List */
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.order-history-card {
+  background: #ffffff;
+  border: 1px solid #ECECEC;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.01);
+  transition: all 0.25s ease;
+}
+
+.order-history-card:hover {
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.02);
+}
+
+.history-card-header {
+  background: #fcfcfb;
+  border-bottom: 1px solid #eee;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.header-info-group {
+  display: flex;
+  gap: 32px;
+}
+
+.info-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.info-label {
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #888888;
+  letter-spacing: 0.5px;
+}
+
+.info-val {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.recipient-cell {
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-status-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.order-id-txt {
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  color: #666666;
+  font-weight: 500;
+}
+
+.status-pill {
+  font-family: "Inter", sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 5px 12px;
+  border-radius: 4px;
+}
+
+.status-success {
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.status-warning {
+  background: #fffbef;
+  color: #b45309;
+}
+
+.status-danger {
+  background: #fdf2f2;
+  color: #9b1c1c;
+}
+
+.status-info {
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+/* Card Body */
+.history-card-body {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+}
+
+.body-items-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.body-item-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.item-thumbnail {
+  width: 50px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #eee;
+  background: #f7f7f7;
+}
+
+.item-text-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item-title-name {
+  font-family: "Playfair Display", serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: #111111;
+}
+
+.item-variant-spec {
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  color: #666666;
+  display: flex;
+  gap: 8px;
+}
+
+.item-qty-price {
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  color: #888888;
+}
+
+/* Actions */
+.body-actions-column {
+  display: flex;
+  align-items: center;
+}
+
+.view-details-cta {
+  background: #ffffff;
+  border: 1px solid #dddddd;
+  color: #111111;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.view-details-cta:hover {
+  border-color: #111;
+  background: #fafafa;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .user-orders-container {
+    padding: 0 20px;
+  }
+  
+  .orders-page-title {
+    font-size: 32px;
+  }
+  
+  .history-card-header {
+    padding: 16px;
+  }
+  
+  .header-info-group {
+    gap: 16px;
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .history-card-body {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px 16px;
+    gap: 20px;
+  }
+  
+  .body-actions-column {
+    width: 100%;
+  }
+  
+  .view-details-cta {
+    width: 100%;
+    text-align: center;
+  }
+}

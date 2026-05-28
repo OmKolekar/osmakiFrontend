@@ -7,6 +7,16 @@
     box-sizing: border-box;
 }
 
+/* Prevent default browser focus outline ring from flashing on container elements during mounting animations */
+body, html, #root, div, section, main, article, header, footer, nav, button {
+    outline: none !important;
+}
+
+/* Override Tailwind v4 default currentColor (black) border fallback to prevent dark outline flashes before hydration */
+*, ::after, ::before {
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
 body {
 
     background: var(--bg-main);

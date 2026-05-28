@@ -77,42 +77,47 @@ export default function HeroSlider({ sections = [], fallback = null }) {
 
   return (
     <section className="hero-slider-container">
-      {sections.map((section, idx) => {
-        const isActive = idx === currentIndex;
-        const isDarkText = section.textColor === "dark";
-        const textAlignClass = `text-${section.textAlign || "center"}`;
+      <div
+        className="hero-slider-track"
+        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+      >
+        {sections.map((section, idx) => {
+          const isActive = idx === currentIndex;
+          const isDarkText = section.textColor === "dark";
+          const textAlignClass = `text-${section.textAlign || "center"}`;
 
-        return (
-          <div
-            key={section.id || idx}
-            className={`hero-slide-item ${isActive ? "active" : ""}`}
-          >
-            <picture className="hero-slide-picture">
-              {section.mobileImage && (
-                <source media="(max-width: 768px)" srcSet={section.mobileImage} />
-              )}
-              <img
-                src={section.desktopImage || "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519"}
-                alt={section.imageAltText || section.title || "Hero banner"}
-                className="hero-slide-img"
-              />
-            </picture>
-            <div className="hero-slide-overlay"></div>
-            <div className={`hero-slide-content ${textAlignClass} ${isDarkText ? "text-dark" : "text-light"}`}>
-              {section.title && <h1 className="hero-slide-title">{section.title}</h1>}
-              {section.subtitle && <p className="hero-slide-subtitle">{section.subtitle}</p>}
-              {section.buttonText && (
-                <button
-                  onClick={() => handleNavigation(section)}
-                  className="hero-slide-btn"
-                >
-                  {section.buttonText}
-                </button>
-              )}
+          return (
+            <div
+              key={section.id || idx}
+              className={`hero-slide-item ${isActive ? "active" : ""}`}
+            >
+              <picture className="hero-slide-picture">
+                {section.mobileImage && (
+                  <source media="(max-width: 768px)" srcSet={section.mobileImage} />
+                )}
+                <img
+                  src={section.desktopImage || "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519"}
+                  alt={section.imageAltText || section.title || "Hero banner"}
+                  className="hero-slide-img"
+                />
+              </picture>
+              <div className="hero-slide-overlay"></div>
+              <div className={`hero-slide-content ${textAlignClass} ${isDarkText ? "text-dark" : "text-light"}`}>
+                {section.title && <h1 className="hero-slide-title">{section.title}</h1>}
+                {section.subtitle && <p className="hero-slide-subtitle">{section.subtitle}</p>}
+                {section.buttonText && (
+                  <button
+                    onClick={() => handleNavigation(section)}
+                    className="hero-slide-btn"
+                  >
+                    {section.buttonText}
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
 
       {sections.length > 1 && (
         <>

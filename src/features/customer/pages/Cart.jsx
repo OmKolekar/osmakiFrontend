@@ -1,10 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import "../styles/cart.css";
 
 export default function Cart() {
+  const navigate = useNavigate();
   const { cartItems, updateQuantity, removeFromCart, cartTotal } = useCart();
 
   const tax = Math.round(cartTotal * 0.05); // 5% mock tax
@@ -147,7 +148,7 @@ export default function Cart() {
 
               <button
                 className="checkout-btn"
-                onClick={() => alert("Checkout integration coming soon!")}
+                onClick={() => navigate("/checkout")}
               >
                 Proceed to Checkout
               </button>

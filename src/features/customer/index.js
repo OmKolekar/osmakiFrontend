@@ -4,3 +4,6 @@ export { default as Women } from './pages/Women';
 export { default as Trending } from './pages/Trending';
 export { default as ProductDetail } from './pages/ProductDetail';
 export { default as Cart } from './pages/Cart';
+export { default as Checkout } from './pages/Checkout';
+export { default as OrderDetails } from './pages/OrderDetails';
+export { default as UserOrders } from './pages/UserOrders';
