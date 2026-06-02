@@ -1,12 +1,14 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Home, Men, Women, Trending, ProductDetail, Cart, Checkout, OrderDetails, UserOrders } from "../features/customer";
+import { Home, Men, Women, Trending, ProductDetail, Cart, Checkout, OrderDetails, UserOrders, AboutUs, ContactUs, PrivacyPolicy, TermsConditions, RefundPolicy, ShippingPolicy } from "../features/customer";
 import { Login } from "../features/auth";
 import { AdminLayout, Dashboard, InventoryManager, AddProduct, InventoryLogs, SectionManager, OrderManager } from "../features/admin";
 import AdminRoute from "./AdminRoute";
+import ScrollToTop from "./ScrollToTop";
 
 export default function AppRoutes() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/men" element={<Men />} />
@@ -18,6 +20,14 @@ export default function AppRoutes() {
         <Route path="/order/:orderId" element={<OrderDetails />} />
         <Route path="/orders" element={<UserOrders />} />
         <Route path="/login" element={<Login />} />
+
+        {/* Informational & Legal Pages */}
+        <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-conditions" element={<TermsConditions />} />
+        <Route path="/refund-policy" element={<RefundPolicy />} />
+        <Route path="/shipping-policy" element={<ShippingPolicy />} />
 
         {/* Protected Admin Routes */}
         <Route element={<AdminRoute />}>

@@ -20,10 +20,10 @@ export default function Footer() {
         {/* Brand Section */}
         <div className="footer-brand">
           <Link to="/" className="footer-logo">
-            OSMAKI
+            𝓞SMAKÌ
           </Link>
           <p className="footer-desc">
-            Premium organic skincare, formulated with high-performance botanical active ingredients to reveal your natural, radiant glow.
+            Premium sustainable apparel, crafted with organic fabrics and high-quality tailoring to elevate your everyday modern wardrobe.
           </p>
           <div className="footer-socials">
 <a
@@ -60,16 +60,16 @@ export default function Footer() {
           <h3 className="footer-title">Company</h3>
           <ul className="footer-links">
             <li>
-              <Link to="/" className="footer-link">Our Story</Link>
+              <Link to="/about-us" className="footer-link">Our Story</Link>
             </li>
             <li>
-              <Link to="/" className="footer-link">Sustainability</Link>
+              <Link to="/contact-us" className="footer-link">Contact Us</Link>
             </li>
             <li>
-              <Link to="/" className="footer-link">Journal</Link>
+              <Link to="/shipping-policy" className="footer-link">Shipping Policy</Link>
             </li>
             <li>
-              <Link to="/login" className="footer-link">Account</Link>
+              <Link to="/refund-policy" className="footer-link">Refund Policy</Link>
             </li>
           </ul>
         </div>
@@ -104,9 +104,8 @@ export default function Footer() {
           © {new Date().getFullYear()} OSMAKI. All rights reserved.
         </div>
         <div className="footer-bottom-links">
-          <Link to="/" className="footer-bottom-link">Privacy Policy</Link>
-          <Link to="/" className="footer-bottom-link">Terms of Service</Link>
-          <Link to="/" className="footer-bottom-link">Accessibility</Link>
+          <Link to="/privacy-policy" className="footer-bottom-link">Privacy Policy</Link>
+          <Link to="/terms-conditions" className="footer-bottom-link">Terms & Conditions</Link>
         </div>
       </div>
     </footer>

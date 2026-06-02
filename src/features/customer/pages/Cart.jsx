@@ -19,7 +19,7 @@ export default function Cart() {
         <div className="empty-cart-view">
           <h2 className="empty-cart-title">Your Cart is Empty</h2>
           <p className="empty-cart-text">
-            Explore our botanical formulations and find the perfect products for your skincare routine.
+            Explore our premium collections and find the perfect garments to elevate your everyday wardrobe.
           </p>
           <Link to="/men" className="empty-cart-btn">
             Explore Collection
@@ -35,6 +35,11 @@ export default function Cart() {
       <Navbar />
 
       <div className="cart-container">
+
+        <header className="cart-header">
+          <h1 className="cart-title">Your Cart</h1>
+        </header>
+
         {/* Progress Indicator */}
         <div className="cart-progress-bar">
           <div className="progress-step active">
@@ -52,10 +57,6 @@ export default function Cart() {
             <span className="step-text">Payment</span>
           </div>
         </div>
-
-        <header className="cart-header">
-          <h1 className="cart-title">Your Cart</h1>
-        </header>
 
         <div className="cart-content-layout">
           {/* Left Column: Cart Items (70% width) */}

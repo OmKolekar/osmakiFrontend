@@ -23,6 +23,37 @@ export default function ProductDetail() {
 
   const [openTab, setOpenTab] = useState("description"); // Default open tab
 
+  // Mobile image slider state
+  const [mobileActiveIndex, setMobileActiveIndex] = useState(0);
+
+  const handleMobileScroll = (e) => {
+    const { scrollLeft, clientWidth } = e.currentTarget;
+    if (clientWidth > 0) {
+      const index = Math.round(scrollLeft / clientWidth);
+      setMobileActiveIndex(index);
+    }
+  };
+
+  const scrollToSlide = (index) => {
+    const slider = document.querySelector(".mobile-image-slider");
+    if (slider) {
+      slider.scrollTo({
+        left: slider.clientWidth * index,
+        behavior: "smooth"
+      });
+      setMobileActiveIndex(index);
+    }
+  };
+
+  // Reset slider scroll when variants change
+  useEffect(() => {
+    setMobileActiveIndex(0);
+    const slider = document.querySelector(".mobile-image-slider");
+    if (slider) {
+      slider.scrollLeft = 0;
+    }
+  }, [selectedColor, selectedSize]);
+
 
   // Set default active image when product changes
   useEffect(() => {
@@ -190,6 +221,14 @@ export default function ProductDetail() {
 
       <div className="page-container">
         <div className="product-detail-container">
+          {/* Mobile Header (visible only on mobile) */}
+          <div className="mobile-product-header">
+            <span className="product-category-breadcrumb">
+              Home / {product.gender || "Catalog"}
+            </span>
+            <h1 className="product-title">{product.name}</h1>
+          </div>
+
           {/* Image Gallery Section */}
           <div className="image-gallery-section">
             <div className="thumbnail-list">
@@ -218,13 +257,53 @@ export default function ProductDetail() {
             </div>
           </div>
 
+          {/* Mobile Image Slider Section (visible only on mobile) */}
+          {displayImages.length > 0 && (
+            <div className="mobile-image-slider-wrapper">
+              <div className="mobile-image-slider" onScroll={handleMobileScroll}>
+                {displayImages.map((img, index) => (
+                  <div key={index} className="mobile-slider-slide">
+                    <img src={img} alt={`${product.name} slide ${index + 1}`} className="mobile-slider-image" />
+                  </div>
+                ))}
+              </div>
+              {displayImages.length > 1 && (
+                <>
+                  <div className="mobile-slider-dots">
+                    {displayImages.map((_, index) => (
+                      <span
+                        key={index}
+                        className={`slider-dot ${mobileActiveIndex === index ? "active" : ""}`}
+                        onClick={() => scrollToSlide(index)}
+                      ></span>
+                    ))}
+                  </div>
+                  <div className="mobile-thumbnail-list">
+                    {displayImages.map((img, index) => (
+                      <button
+                         key={index}
+                         className={`mobile-thumbnail-button ${mobileActiveIndex === index ? "active" : ""}`}
+                         onClick={() => scrollToSlide(index)}
+                      >
+                        <img src={img} alt={`${product.name} mobile thumbnail ${index + 1}`} className="mobile-thumbnail-image" />
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
           {/* Product Details Section */}
           <div className="product-details-info">
             <div className="product-details-header">
-              <span className="product-category-breadcrumb">
-                Home / {product.gender || "Catalog"}
-              </span>
-              <h1 className="product-title">{product.name}</h1>
+              {/* Desktop Header (hidden on mobile) */}
+              <div className="desktop-product-header">
+                <span className="product-category-breadcrumb">
+                  Home / {product.gender || "Catalog"}
+                </span>
+                <h1 className="product-title">{product.name}</h1>
+              </div>
               <div style={{ margin: "15px 0" }}>
                 <PriceDisplay price={displayPrice} discountPrice={displayDiscountPrice} size="lg" />
               </div>
