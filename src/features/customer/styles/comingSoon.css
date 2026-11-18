@@ -1,0 +1,192 @@
+/* comingSoon.css - Gentle luxury Coming Soon layout for OSMAKI */
+
+.coming-soon-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 160px);
+  padding: 110px 24px 80px 24px;
+  background-color: var(--bg-main, #ffffff);
+  box-sizing: border-box;
+}
+
+.coming-soon-content {
+  max-width: 620px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  animation: comingSoonFadeIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.coming-soon-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+
+.coming-soon-sparkle {
+  font-size: 22px;
+  color: var(--accent, #c9184a);
+  display: inline-block;
+  animation: gentlePulse 3.5s ease-in-out infinite;
+  user-select: none;
+}
+
+.coming-soon-badge {
+  display: inline-block;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #737373;
+  background: #fbfaf9;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  padding: 6px 18px;
+  border-radius: 999px;
+  margin-bottom: 22px;
+}
+
+.coming-soon-title {
+  font-family: "Playfair Display", serif;
+  font-size: 44px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  color: var(--text-dark, #1a1a1a);
+  line-height: 1.25;
+  margin-bottom: 16px;
+}
+
+.coming-soon-divider {
+  width: 36px;
+  height: 1.5px;
+  background-color: var(--accent, #c9184a);
+  margin: 0 auto 20px auto;
+  opacity: 0.85;
+}
+
+.coming-soon-subtitle {
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  font-size: 19px;
+  color: #525252;
+  margin-bottom: 16px;
+  letter-spacing: 0.2px;
+}
+
+.coming-soon-message {
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  line-height: 1.85;
+  color: #666666;
+  margin: 0 auto 16px auto;
+  font-weight: 300;
+  max-width: 530px;
+}
+
+.coming-soon-note {
+  font-family: "Inter", sans-serif;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #8c8c8c;
+  margin: 0 auto 36px auto;
+  font-weight: 400;
+  max-width: 480px;
+}
+
+.coming-soon-action {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.coming-soon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "Inter", sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  background-color: transparent;
+  border: 1px solid #1a1a1a;
+  padding: 13px 30px;
+  border-radius: 4px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+}
+
+.coming-soon-arrow {
+  transition: transform 0.3s ease;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.coming-soon-btn:hover {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.coming-soon-btn:hover .coming-soon-arrow {
+  transform: translateX(4px);
+}
+
+/* Animations */
+@keyframes comingSoonFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gentlePulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .coming-soon-container {
+    padding: 90px 20px 60px 20px;
+    min-height: calc(100vh - 140px);
+  }
+
+  .coming-soon-title {
+    font-size: 32px;
+  }
+
+  .coming-soon-subtitle {
+    font-size: 17px;
+  }
+
+  .coming-soon-message {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .coming-soon-note {
+    font-size: 12.5px;
+    margin-bottom: 28px;
+  }
+
+  .coming-soon-btn {
+    padding: 12px 24px;
+    font-size: 11.5px;
+  }
+}

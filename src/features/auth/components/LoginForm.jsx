@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import SignupModal from "./SignupModal";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
@@ -51,15 +53,26 @@ export default function LoginForm() {
           required
           disabled={loading}
         />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="login-input"
-          required
-          disabled={loading}
-        />
+        <div className="login-password-wrapper">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="login-input"
+            required
+            disabled={loading}
+          />
+          <button
+            type="button"
+            className="password-toggle-btn"
+            onClick={() => setShowPassword((prev) => !prev)}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            tabIndex={-1}
+          >
+            {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+          </button>
+        </div>
 
         {error && <div className="modal-error-message">{error}</div>}
 

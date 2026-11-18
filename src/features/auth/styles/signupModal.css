@@ -132,6 +132,39 @@
   cursor: not-allowed;
 }
 
+.modal-password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.modal-password-wrapper .modal-input {
+  width: 100%;
+  padding-right: 48px;
+}
+
+.modal-password-wrapper .password-toggle-btn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #8c8c8c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+}
+
+.modal-password-wrapper .password-toggle-btn:hover {
+  color: #1a1a1a;
+}
+
 .verified-email-badge {
   display: flex;
   align-items: center;

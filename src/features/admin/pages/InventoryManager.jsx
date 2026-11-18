@@ -1,8 +1,9 @@
 import { Fragment } from "react";
+import { useNavigate } from "react-router-dom";
 import useInventoryManager from "../hooks/useInventoryManager";
-import EditProductModal from "../components/EditProductModal";
 
 export default function InventoryManager() {
+  const navigate = useNavigate();
   const {
     loading,
     error,
@@ -137,7 +138,7 @@ export default function InventoryManager() {
                       </td>
                       <td style={{ textAlign: "right" }} onClick={(e) => e.stopPropagation()}>
                         <button
-                          onClick={() => openEditModal(product)}
+                          onClick={() => navigate(`/admin/edit-product/${product.id}`)}
                           className="action-link-btn"
                           style={{ marginRight: "12px", color: "#111111", textDecoration: "underline" }}
                         >
@@ -293,14 +294,6 @@ export default function InventoryManager() {
           </form>
         </div>
       )}
-
-      {/* Edit Product Modal */}
-      <EditProductModal
-        isOpen={isEditModalOpen}
-        product={editingProduct}
-        onClose={closeEditModal}
-        onSave={handleEditSave}
-      />
     </div>
   );
 }

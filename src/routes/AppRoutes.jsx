@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Home, Men, Women, Trending, ProductDetail, Cart, Checkout, OrderDetails, UserOrders, AboutUs, ContactUs, PrivacyPolicy, TermsConditions, RefundPolicy, ShippingPolicy } from "../features/customer";
 import { Login } from "../features/auth";
-import { AdminLayout, Dashboard, InventoryManager, AddProduct, InventoryLogs, SectionManager, OrderManager } from "../features/admin";
+import { AdminLayout, Dashboard, InventoryManager, AddProduct, EditProduct, InventoryLogs, SectionManager, OrderManager } from "../features/admin";
 import AdminRoute from "./AdminRoute";
 import ScrollToTop from "./ScrollToTop";
 
@@ -36,6 +36,7 @@ export default function AppRoutes() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="inventory" element={<InventoryManager />} />
             <Route path="add-product" element={<AddProduct />} />
+            <Route path="edit-product/:id" element={<EditProduct />} />
             <Route path="logs" element={<InventoryLogs />} />
             <Route path="sections" element={<SectionManager />} />
             <Route path="orders" element={<OrderManager />} />

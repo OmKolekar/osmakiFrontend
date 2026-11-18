@@ -1,115 +1,811 @@
+/* ==========================================================================
+   OSMAKI — HIGH-END ARCHITECTURAL STREETWEAR HOMEPAGE STYLES
+   ========================================================================== */
+
 .home-page {
-    background: #ffffff;
-}
-
-/* HERO IMAGE */
-
-.hero-image {
-
-    position: relative;
-
-    width: 100%;
-
-    height: 600px;
-
-    overflow: hidden;
-
-}
-
-.hero-image img {
-
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-
-}
-
-/* text overlay */
-
-.hero-content {
-
-    position: absolute;
-
-    top: 50%;
-    left: 80px;
-
-    transform: translateY(-50%);
-
-    color: white;
-
-    max-width: 420px;
-
-}
-
-.hero-content h1 {
-
-    font-size: 64px;
-
-    line-height: 1.1;
-
-    margin-bottom: 20px;
-
-    font-weight: 700;
-
-}
-
-.hero-content p {
-
-    margin-bottom: 20px;
-
-    font-size: 16px;
-
-}
-
-.hero-btn {
-    background: white;
-    color: black;
-    padding: 12px 28px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-}
-
-@media (max-width: 900px) {
-  .hero-image {
-    height: 450px;
-  }
-  
-  .hero-content {
-    left: 40px;
-    max-width: 350px;
-  }
-  
-  .hero-content h1 {
-    font-size: 48px;
-  }
-}
-
-@media (max-width: 600px) {
-  .hero-image {
-    height: 350px;
-  }
-  
-  .hero-content {
-    left: 20px;
-    right: 20px;
-    max-width: 100%;
-    text-align: center;
-  }
-  
-  .hero-content h1 {
-    font-size: 36px;
-  }
-  
-  .hero-btn {
-    padding: 10px 24px;
-    font-size: 14px;
-  }
+  background: #ffffff;
+  color: #111111;
+  min-height: 100vh;
 }
 
 .home-page .page-container {
-  padding-top: 0;
+  padding-top: 80px; /* Offset for fixed navbar */
 }
 
+/* --------------------------------------------------------------------------
+   1. TOP ANNOUNCEMENT BAR
+   -------------------------------------------------------------------------- */
+.home-announcement-bar {
+  background: #000000;
+  color: #ffffff;
+  padding: 10px 24px;
+  width: 100%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.announcement-content {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.announcement-badge {
+  background: #222222;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.announcement-text {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+  text-align: center;
+}
+
+.announcement-cta {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0;
+  transition: opacity 0.2s ease;
+}
+
+.announcement-cta:hover {
+  opacity: 0.75;
+}
+
+/* --------------------------------------------------------------------------
+   2. EDITORIAL HERO HEADER SECTION
+   -------------------------------------------------------------------------- */
+.home-hero-section {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 44px 40px 24px 40px;
+}
+
+.hero-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.breadcrumb-muted {
+  color: #888888;
+}
+
+.breadcrumb-slash {
+  color: #cccccc;
+}
+
+.breadcrumb-active {
+  color: #111111;
+  font-weight: 700;
+}
+
+.hero-headline-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-eyebrow-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-chapter-tag {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #666666;
+}
+
+.hero-edition-tag {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: #111111;
+  background: #f1f1f1;
+  padding: 3px 9px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.hero-headline {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: clamp(38px, 5.5vw, 68px);
+  font-weight: 850;
+  letter-spacing: -1.8px;
+  line-height: 1.04;
+  color: #050505;
+  margin-bottom: 18px;
+  text-transform: uppercase;
+}
+
+.hero-subtext {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: clamp(15px, 1.6vw, 17.5px);
+  color: #4b5563;
+  max-width: 820px;
+  line-height: 1.65;
+  margin-bottom: 28px;
+  font-weight: 400;
+}
+
+/* Architecture Filter / Spec Pills */
+.hero-pills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 32px;
+  align-items: center;
+}
+
+.hero-pill {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: #2b2b2b;
+  background: #ffffff;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.hero-pill.active {
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+.hero-pill.in-stock-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #15803d;
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #16a34a;
+  box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
+  animation: pulseGreen 2s infinite;
+}
+
+@keyframes pulseGreen {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(22, 163, 74, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0);
+  }
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.hero-btn-primary {
+  background: #000000;
+  color: #ffffff;
+  border: 1px solid #000000;
+  padding: 14px 30px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-btn-primary:hover {
+  background: #262626;
+  border-color: #262626;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.hero-btn-secondary {
+  background: transparent;
+  color: #111111;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  padding: 14px 28px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-btn-secondary:hover {
+  border-color: #000000;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* --------------------------------------------------------------------------
+   3. PRODUCT SPOTLIGHT SECTION
+   -------------------------------------------------------------------------- */
+.home-product-section {
+  padding: 0 0 60px 0;
+  scroll-margin-top: 90px;
+}
+
+.home-product-section .products {
+  padding-top: 20px;
+}
+
+.section-title-wrap {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 36px auto;
+  padding: 0 20px;
+}
+
+.section-eyebrow {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: #6b7280;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.section-title {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  color: #0a0a0a;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.section-subtitle {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 15px;
+  color: #555555;
+  line-height: 1.6;
+}
+
+.scarcity-status-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 36px;
+  padding: 12px 24px;
+  background: #fafafa;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 4px;
+  max-width: 820px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+.scarcity-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #000000;
+  flex-shrink: 0;
+}
+
+.scarcity-text {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #222222;
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   4. WIDE ARCHITECTURAL TEXT BANNER (Stitch black design)
+   -------------------------------------------------------------------------- */
+.architectural-dark-banner {
+  background: #000000;
+  color: #ffffff;
+  padding: 70px 40px;
+  margin: 40px 0 60px 0;
+  scroll-margin-top: 90px;
+}
+
+.dark-banner-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px;
+}
+
+.dark-banner-content {
+  flex: 1 1 56%;
+  max-width: 680px;
+}
+
+.dark-banner-badge {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  display: block;
+  margin-bottom: 14px;
+}
+
+.dark-banner-heading {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: clamp(30px, 4.2vw, 48px);
+  font-weight: 850;
+  letter-spacing: -1px;
+  line-height: 1.1;
+  margin-bottom: 18px;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.dark-banner-description {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.82);
+  margin-bottom: 26px;
+  font-weight: 400;
+}
+
+.dark-banner-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  color: #ffffff;
+  padding: 13px 26px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.dark-banner-btn:hover {
+  background: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+}
+
+.dark-banner-metrics {
+  flex: 1 1 44%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
+  padding-left: 44px;
+}
+
+.metric-box {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.metric-value {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: clamp(26px, 3.2vw, 40px);
+  font-weight: 850;
+  letter-spacing: -0.8px;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.metric-title {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+  margin-top: 4px;
+}
+
+.metric-sub {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.52);
+  line-height: 1.35;
+}
+
+/* --------------------------------------------------------------------------
+   5. QUALITY & PHILOSOPHY CARDS SECTION
+   -------------------------------------------------------------------------- */
+.philosophy-section {
+  padding: 80px 40px;
+  background: #fbfbfb;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.philosophy-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.philosophy-header {
+  text-align: center;
+  max-width: 740px;
+  margin: 0 auto 50px auto;
+}
+
+.philosophy-badge {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #6b7280;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.philosophy-heading {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: clamp(28px, 3.6vw, 42px);
+  font-weight: 850;
+  letter-spacing: -0.8px;
+  color: #0f0f0f;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.philosophy-subheading {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 15px;
+  color: #555555;
+  line-height: 1.6;
+}
+
+.philosophy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.philosophy-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  padding: 34px 28px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.philosophy-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.16);
+}
+
+.card-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.card-index {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  color: #a3a3a3;
+}
+
+.card-tag {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #666666;
+}
+
+.card-heading {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 18px;
+  font-weight: 750;
+  color: #111111;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.card-text {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #4b5563;
+}
+
+/* --------------------------------------------------------------------------
+   6. DROP ALLOCATION & NEWSLETTER SECTION
+   -------------------------------------------------------------------------- */
+.allocation-section {
+  padding: 80px 40px;
+}
+
+.allocation-inner {
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.allocation-card {
+  background: #090909;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 56px 44px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.14);
+}
+
+.allocation-badge {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  display: block;
+  margin-bottom: 14px;
+}
+
+.allocation-title {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 850;
+  letter-spacing: -0.6px;
+  margin-bottom: 14px;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.allocation-text {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 600px;
+  margin: 0 auto 30px auto;
+}
+
+.allocation-form {
+  display: flex;
+  max-width: 520px;
+  margin: 0 auto;
+  gap: 10px;
+}
+
+.allocation-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 4px;
+  padding: 14px 18px;
+  color: #ffffff;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.allocation-input::placeholder {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.allocation-input:focus {
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.allocation-submit-btn {
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  border-radius: 4px;
+  padding: 14px 24px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.allocation-submit-btn:hover {
+  background: #e5e5e5;
+  transform: translateY(-1px);
+}
+
+.allocation-success-note {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4ade80;
+  margin-top: 18px;
+}
+
+.allocation-footer-tag {
+  margin-top: 38px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE MEDIA QUERIES
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .dark-banner-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 40px;
+  }
+
+  .dark-banner-metrics {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    padding-left: 0;
+    padding-top: 32px;
+  }
+
+  .philosophy-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .home-page .page-container {
+    padding-top: 80px;
+  }
+
+  .home-hero-section {
+    padding: 30px 20px 20px 20px;
+  }
+
+  .announcement-content {
+    gap: 8px;
+  }
+
+  .architectural-dark-banner {
+    padding: 50px 20px;
+    margin: 30px 0 40px 0;
+  }
+
+  .dark-banner-metrics {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .philosophy-section {
+    padding: 60px 20px;
+  }
+
+  .philosophy-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .allocation-section {
+    padding: 50px 20px;
+  }
+
+  .allocation-card {
+    padding: 40px 24px;
+  }
+
+  .allocation-form {
+    flex-direction: column;
+  }
+
+  .allocation-submit-btn {
+    width: 100%;
+    padding: 14px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-btn-primary,
+  .hero-btn-secondary {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .announcement-text {
+    font-size: 10.5px;
+  }
+
+  .hero-pills-container {
+    gap: 6px;
+  }
+
+  .hero-pill {
+    font-size: 10px;
+    padding: 6px 10px;
+  }
+}

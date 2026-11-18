@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { authApi } from "../../../api/auth";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import "../styles/signupModal.css";
 
 export default function SignupModal({ isOpen, onClose }) {
@@ -10,6 +11,7 @@ export default function SignupModal({ isOpen, onClose }) {
   const [otp, setOtp] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -105,6 +107,7 @@ export default function SignupModal({ isOpen, onClose }) {
     setOtp("");
     setName("");
     setPassword("");
+    setShowPassword(false);
     setPhone("");
     setError("");
     setTransitioning(false);
@@ -217,16 +220,27 @@ export default function SignupModal({ isOpen, onClose }) {
               </div>
 
               <div className="input-group animate-slide-down">
-                <input
-                  type="password"
-                  placeholder="Set password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="modal-input"
-                  required
-                  disabled={loading}
-                  autoComplete="new-password"
-                />
+                <div className="modal-password-wrapper">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Set password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="modal-input"
+                    required
+                    disabled={loading}
+                    autoComplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle-btn"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                  </button>
+                </div>
               </div>
 
               <div className="input-group animate-slide-down">
