@@ -36,7 +36,7 @@ export default function ContactUs() {
       <Navbar />
 
       <header className="static-page-header">
-        <span className="static-page-subtitle">Get In Touch</span>
+        <span className="static-page-subtitle"></span>
         <h1>Contact Us</h1>
       </header>
 
@@ -49,9 +49,7 @@ export default function ContactUs() {
               For questions regarding garment measurements, sizing advice, style consultations, or shipping and returns assistance, our dedicated concierge team is here to guide you.
             </p>
             <p style={{ marginTop: "10px", fontWeight: 500 }}>
-              Email: concierge@osmaki.com<br />
-              Phone: +1 (800) 555-OSMA<br />
-              Hours: Mon - Fri, 9:00 AM - 6:00 PM EST
+              Email: osmakiofficial@gmail.com<br />
             </p>
           </div>
 
@@ -60,18 +58,13 @@ export default function ContactUs() {
             <p>
               For editorial inquiries, brand collaborations, or wholesale/retail distribution opportunities:
             </p>
-            <p style={{ marginTop: "10px", fontWeight: 500 }}>
-              Email: press@osmaki.com
-            </p>
+
           </div>
 
           <div className="contact-info-block">
             <h3>Atelier & Showroom</h3>
             <p>
-              OSMAKI Design Studios LLC<br />
-              452 Fifth Avenue, 18th Floor<br />
-              New York, NY 10018<br />
-              United States
+              INDIA
             </p>
           </div>
         </section>
@@ -82,8 +75,8 @@ export default function ContactUs() {
             <div className="submit-success-msg">
               <h3 style={{ fontFamily: "Playfair Display, serif", fontSize: "20px", marginBottom: "10px" }}>Thank You</h3>
               <p>Your message has been successfully received. A member of our concierge team will reach out to you within 24 business hours.</p>
-              <button 
-                className="submit-button" 
+              <button
+                className="submit-button"
                 style={{ marginTop: "20px", width: "auto" }}
                 onClick={() => setSubmitted(false)}
               >

@@ -56,10 +56,7 @@ export default function Home() {
             )}
           </div>
 
-          <div className="scarcity-status-banner">
-            <span className="scarcity-dot"></span>
-            <span className="scarcity-text">FIRST EDITION RUN // STRICTLY 100 PIECES WORLDWIDE // COMPLIMENTARY EXPRESS DISPATCH</span>
-          </div>
+
         </section>
 
         {/* 4. WIDE ARCHITECTURAL TEXT BANNER (Inspired directly by the Stitch black banner in the screenshot) */}

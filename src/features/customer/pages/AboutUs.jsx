@@ -9,7 +9,7 @@ export default function AboutUs() {
       <Navbar />
 
       <header className="static-page-header">
-        <span className="static-page-subtitle">Our Journey</span>
+        <span className="static-page-subtitle"></span>
         <h1>Our Story</h1>
       </header>
 

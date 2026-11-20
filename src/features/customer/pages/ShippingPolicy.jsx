@@ -9,7 +9,7 @@ export default function ShippingPolicy() {
       <Navbar />
 
       <header className="static-page-header">
-        <span className="static-page-subtitle">Customer Care</span>
+        <span className="static-page-subtitle"></span>
         <h1>Shipping Policy</h1>
       </header>
 

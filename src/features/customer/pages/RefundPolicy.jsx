@@ -9,7 +9,7 @@ export default function RefundPolicy() {
       <Navbar />
 
       <header className="static-page-header">
-        <span className="static-page-subtitle">Customer Care</span>
+        <span className="static-page-subtitle"></span>
         <h1>Refund Policy</h1>
       </header>
 

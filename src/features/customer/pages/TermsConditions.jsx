@@ -9,7 +9,7 @@ export default function TermsConditions() {
       <Navbar />
 
       <header className="static-page-header">
-        <span className="static-page-subtitle">Legal & Safety</span>
+        <span className="static-page-subtitle"></span>
         <h1>Terms & Conditions</h1>
       </header>
 
