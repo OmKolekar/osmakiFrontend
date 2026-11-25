@@ -705,7 +705,7 @@ export default function OrderManager() {
               </thead>
               <tbody>
                 {selectedOrder.items?.map((item) => {
-                  const imgUrl = item.variant?.images?.[0]?.imageUrl || "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd";
+                  const imgUrl = item.variant?.images?.[0]?.imageUrl || "";
                   return (
                     <tr key={item.id}>
                       <td style={{ display: "flex", alignItems: "center", gap: "10px" }}>

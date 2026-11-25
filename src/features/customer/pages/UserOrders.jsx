@@ -142,7 +142,7 @@ export default function UserOrders() {
                 <div className="history-card-body">
                   <div className="body-items-list">
                     {order.items?.map((item) => {
-                      const image = item.variant?.images?.[0]?.imageUrl || "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd";
+                      const image = item.variant?.images?.[0]?.imageUrl || "";
                       return (
                         <div key={item.id} className="body-item-row">
                           <img src={image} alt={item.productName} className="item-thumbnail" />

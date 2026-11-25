@@ -8,7 +8,7 @@ export const cartService = {
     return dbItems.map((item) => {
       const variant = item.variant;
       const product = variant?.product;
-      const variantImage = variant?.images?.[0]?.imageUrl || "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd";
+      const variantImage = variant?.images?.[0]?.imageUrl || product?.image || "";
       
       const getActivePrice = (v, p) => {
         const vPrice = parseFloat(v?.price || p?.price || 0);

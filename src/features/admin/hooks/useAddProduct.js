@@ -107,6 +107,14 @@ export function useAddProduct() {
       return setErrorMsg("Each variant must possess a unique SKU.");
     }
 
+    const totalImages = variants.reduce(
+      (acc, v) => acc + (v.files?.length || 0) + (v.imageUrls?.length || 0),
+      0
+    );
+    if (totalImages === 0) {
+      return setErrorMsg("At least one product image is mandatory. Please upload an image for your variant.");
+    }
+
     try {
       setIsSubmitting(true);
       setErrorMsg("");

@@ -341,7 +341,7 @@ export default function OrderDetails() {
               </thead>
               <tbody>
                 {order.items?.map((item) => {
-                  const image = item.variant?.images?.[0]?.imageUrl || "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd";
+                  const image = item.variant?.images?.[0]?.imageUrl || "";
                   return (
                     <tr key={item.id}>
                       <td className="item-details-cell">

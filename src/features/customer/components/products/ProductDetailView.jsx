@@ -2,7 +2,8 @@ export default function ProductDetailView() {
   return (
     <div className="product-detail-container">
       <img
-        src="https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd"
+        src=""
+        style={{ backgroundColor: "#f4f4f5" }}
         className="product-image"
         alt="Hydrating Serum"
       />

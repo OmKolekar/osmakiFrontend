@@ -32,7 +32,7 @@ export default function ProductCard({ product }) {
   // Primary & Secondary Image resolution
   const variantImages = product.variants?.flatMap((v) => v.images?.map((img) => img.imageUrl) || []).filter(Boolean) || [];
   const allImages = [...new Set([product.image, ...variantImages].filter(Boolean))];
-  const primaryImage = product.image || allImages[0] || "https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd";
+  const primaryImage = product.image || allImages[0] || "";
   const secondaryImage = allImages.length > 1 && allImages[1] !== primaryImage ? allImages[1] : null;
 
   // Real sizes and colors from actual product variants
