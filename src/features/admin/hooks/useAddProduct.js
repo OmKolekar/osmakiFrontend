@@ -107,6 +107,13 @@ export function useAddProduct() {
       return setErrorMsg("Each variant must possess a unique SKU.");
     }
 
+    // Client-side duplicate SKU check across variant sizes
+    const skuList = variants.map((v) => (v.sku || "").trim().toUpperCase());
+    const duplicateSku = skuList.find((sku, idx) => sku && skuList.indexOf(sku) !== idx);
+    if (duplicateSku) {
+      return setErrorMsg(`Duplicate SKU "${duplicateSku}" detected. Each variant size must have a distinct, unique SKU code.`);
+    }
+
     const totalImages = variants.reduce(
       (acc, v) => acc + (v.files?.length || 0) + (v.imageUrls?.length || 0),
       0

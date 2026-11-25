@@ -46,7 +46,7 @@ export default function Checkout() {
 
   // Checkout Options
   const [shippingMethod, setShippingMethod] = useState("standard");
-  const [paymentMethod, setPaymentMethod] = useState("online"); // 'online' (Razorpay/Mock) or 'cod'
+  const [paymentMethod, setPaymentMethod] = useState("online"); // 100% online prepaid via Razorpay
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState("");
@@ -226,21 +226,7 @@ export default function Checkout() {
     setError("");
 
     try {
-      // 1. If Cash on Delivery, place confirmed COD order directly
-      if (paymentMethod === "cod") {
-        const placement = await orderApi.createOrder(
-          user.id,
-          selectedAddressId,
-          appliedCoupon ? appliedCoupon.code : null,
-          shippingMethod,
-          "COD"
-        );
-        clearCart();
-        navigate(`/order/${placement.orderId}`, { state: { justPlaced: true } });
-        return;
-      }
-
-      // 2. Create Pending Order for Online Payment (Razorpay / Mock)
+      // 1. Create Pending Order for Online Payment (Razorpay / Mock)
       const placement = await orderApi.createOrder(
         user.id,
         selectedAddressId,
@@ -251,7 +237,7 @@ export default function Checkout() {
 
       const { orderId } = placement;
 
-      // 3. Create Payment Request
+      // 2. Create Payment Request
       const gatewayResponse = await paymentApi.createPaymentRequest(orderId);
 
       if (gatewayResponse.isMock) {
@@ -532,37 +518,22 @@ export default function Checkout() {
 
             {/* Section 2: Payment Method */}
             <section className="checkout-section">
-              <h2 className="section-title">2. Payment Method</h2>
-              <div className="payment-options-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "12px" }}>
-                <label className={`payment-option-card ${paymentMethod === "online" ? "selected" : ""}`}>
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="online"
-                    checked={paymentMethod === "online"}
-                    onChange={() => setPaymentMethod("online")}
-                    className="payment-radio"
-                  />
+              <div className="checkout-section-header-row" style={{ marginBottom: "16px" }}>
+                <h2 className="section-title" style={{ margin: 0 }}>2. Payment Method</h2>
+                <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.06em", color: "#16a34a", background: "#f0fdf4", border: "1px solid #bbf7d0", padding: "3px 10px", borderRadius: "12px", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                  <span>🔒</span> 256-BIT SSL ENCRYPTED
+                </span>
+              </div>
+              <div className="payment-options-grid" style={{ display: "grid", gridTemplateColumns: "1fr", gap: "12px" }}>
+                <div className="payment-option-card selected" style={{ cursor: "default", border: "1.5px solid #111" }}>
+                  <div className="payment-radio" style={{ width: "18px", height: "18px", borderRadius: "50%", border: "5px solid #111", background: "#fff", display: "inline-block", flexShrink: 0, marginTop: "2px" }} />
                   <div className="payment-option-info">
-                    <span className="payment-name">UPI / Card / NetBanking</span>
-                    <span className="payment-desc">Pay securely using UPI, Card, or Wallets via Razorpay</span>
+                    <span className="payment-name" style={{ fontWeight: 600, fontSize: "15px" }}>Instant Online Payment (UPI, Cards, NetBanking, Wallets)</span>
+                    <span className="payment-desc" style={{ marginTop: "4px", color: "#555", fontSize: "13px", lineHeight: "1.5" }}>
+                      Pay securely via Razorpay. Supports Google Pay, PhonePe, Paytm, BHIM, all major Debit & Credit Cards, NetBanking, and Wallets.
+                    </span>
                   </div>
-                </label>
-
-                <label className={`payment-option-card ${paymentMethod === "cod" ? "selected" : ""}`}>
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="cod"
-                    checked={paymentMethod === "cod"}
-                    onChange={() => setPaymentMethod("cod")}
-                    className="payment-radio"
-                  />
-                  <div className="payment-option-info">
-                    <span className="payment-name">Cash on Delivery (COD)</span>
-                    <span className="payment-desc">Pay cash or scan UPI upon doorstep delivery</span>
-                  </div>
-                </label>
+                </div>
               </div>
             </section>
 
