@@ -7,43 +7,48 @@ const CartContext = createContext(null);
 export function CartProvider({ children }) {
   const { user } = useAuth();
   const [cartItems, setCartItems] = useState(() => {
-    const savedUser = localStorage.getItem("osmaki_user");
-    if (!savedUser) {
-      const savedCart = localStorage.getItem("osmaki_cart");
+    // SWR Cache: Read user or guest cart instantly from localStorage for 0ms initial render
+    try {
+      const activeUser = localStorage.getItem("osmaki_user");
+      const userId = activeUser ? JSON.parse(activeUser)?.id : null;
+      const key = userId ? `osmaki_user_cart_${userId}` : "osmaki_cart";
+      const savedCart = localStorage.getItem(key) || localStorage.getItem("osmaki_cart");
       if (savedCart) {
-        try {
-          return JSON.parse(savedCart);
-        } catch (err) {
-          console.error("Failed to parse saved cart on init:", err);
-        }
+        const parsed = JSON.parse(savedCart);
+        if (Array.isArray(parsed)) return parsed;
       }
+    } catch (err) {
+      console.warn("Failed to parse cached cart on init:", err);
     }
     return [];
   });
   const [loading, setLoading] = useState(false);
 
-  // Sync / Load cart depending on user status
+  // Sync / Load cart depending on user status in background (SWR pattern)
   useEffect(() => {
     const syncCart = async () => {
       if (user) {
-        setLoading(true);
+        // Only trigger loading spinner if we don't already have cached items
+        if (cartItems.length === 0) {
+          setLoading(true);
+        }
         try {
-          // If there are items in local storage cart, merge them to DB first
-          const savedCart = localStorage.getItem("osmaki_cart");
-          if (savedCart) {
-            const localItems = JSON.parse(savedCart);
-            if (localItems.length > 0) {
+          // If there are guest items in local storage, merge them to DB first
+          const savedGuestCart = localStorage.getItem("osmaki_cart");
+          if (savedGuestCart) {
+            const localItems = JSON.parse(savedGuestCart);
+            if (Array.isArray(localItems) && localItems.length > 0) {
               for (const item of localItems) {
                 await cartService.addToCart(user.id, item.id, item.quantity);
               }
-              // Clear local storage after merging
               localStorage.removeItem("osmaki_cart");
             }
           }
 
-          // Fetch final merged cart from backend
+          // Fetch fresh merged cart from backend silently
           const items = await cartService.getCart(user.id);
           setCartItems(items);
+          localStorage.setItem(`osmaki_user_cart_${user.id}`, JSON.stringify(items));
         } catch (err) {
           console.error("Failed to sync cart with backend:", err);
         } finally {
@@ -68,9 +73,11 @@ export function CartProvider({ children }) {
     syncCart();
   }, [user]);
 
-  // Save guest cart to localStorage
+  // Persist cart to localStorage (user-specific or guest)
   useEffect(() => {
-    if (!user) {
+    if (user) {
+      localStorage.setItem(`osmaki_user_cart_${user.id}`, JSON.stringify(cartItems));
+    } else {
       localStorage.setItem("osmaki_cart", JSON.stringify(cartItems));
     }
   }, [cartItems, user]);
@@ -139,12 +146,14 @@ export function CartProvider({ children }) {
   const clearCart = async () => {
     if (user) {
       try {
+        localStorage.removeItem(`osmaki_user_cart_${user.id}`);
         await cartService.clearCart(user.id);
         setCartItems([]);
       } catch (err) {
         console.error("Failed to clear backend cart:", err);
       }
     } else {
+      localStorage.removeItem("osmaki_cart");
       setCartItems([]);
     }
   };

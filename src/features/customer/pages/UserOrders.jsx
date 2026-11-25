@@ -10,8 +10,28 @@ export default function UserOrders() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // SWR: Initialize instantly from cache if available (0ms render)
+  const [orders, setOrders] = useState(() => {
+    try {
+      if (user?.id) {
+        const raw = sessionStorage.getItem(`osmaki_orders_${user.id}`);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      }
+    } catch {}
+    return [];
+  });
+  const [loading, setLoading] = useState(() => {
+    try {
+      if (user?.id) {
+        const raw = sessionStorage.getItem(`osmaki_orders_${user.id}`);
+        if (raw) return false;
+      }
+    } catch {}
+    return true;
+  });
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -23,14 +43,16 @@ export default function UserOrders() {
   }, [user]);
 
   const fetchUserOrders = async () => {
-    setLoading(true);
     try {
       const list = await orderApi.getUserOrders(user.id);
       setOrders(list);
+      sessionStorage.setItem(`osmaki_orders_${user.id}`, JSON.stringify(list));
       setError("");
     } catch (err) {
       console.error("Failed to load user orders:", err);
-      setError(err.message || "Failed to retrieve your order history");
+      if (orders.length === 0) {
+        setError(err.message || "Failed to retrieve your order history");
+      }
     } finally {
       setLoading(false);
     }
