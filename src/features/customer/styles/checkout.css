@@ -41,7 +41,7 @@
 }
 
 .checkout-progress .progress-step.active {
-  color: #55a630;
+  color: #111111;
   font-weight: 600;
 }
 
@@ -54,8 +54,8 @@
 }
 
 .checkout-progress .progress-step.active .step-dot {
-  background: #55a630;
-  box-shadow: 0 0 0 4px rgba(85, 166, 48, 0.15);
+  background: #111111;
+  box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.12);
 }
 
 .checkout-progress .progress-line {
@@ -65,7 +65,7 @@
 }
 
 .checkout-progress .progress-line.active {
-  background: #55a630;
+  background: #111111;
 }
 
 /* Layout */
@@ -347,6 +347,27 @@
   accent-color: #111111;
 }
 
+.shipping-option-radio-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #111111;
+  position: relative;
+  flex-shrink: 0;
+  background: #ffffff;
+}
+
+.shipping-option-radio-dot::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #111111;
+}
+
 .shipping-option-info, .payment-option-info {
   flex: 1;
   display: flex;
@@ -413,6 +434,23 @@
   flex: 1;
 }
 
+.checkout-section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.checkout-items-count-badge {
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #71717a;
+  background: #f4f4f5;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
 .preview-item-name {
   font-family: "Playfair Display", serif;
   font-size: 16px;
@@ -425,7 +463,7 @@
   font-family: "Inter", sans-serif;
   font-size: 12px;
   color: #666666;
-  margin: 0 0 2px 0;
+  margin: 0 0 6px 0;
   display: flex;
   gap: 12px;
 }
@@ -437,11 +475,140 @@
   margin: 0;
 }
 
+.preview-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.preview-qty-stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #e5e5e5;
+  border-radius: 20px;
+  background: #fafafa;
+  padding: 2px 6px;
+  gap: 4px;
+}
+
+.checkout-qty-btn {
+  background: transparent;
+  border: none;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 500;
+  color: #111111;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.checkout-qty-btn:hover {
+  background: #eaeaea;
+}
+
+.checkout-qty-val {
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 20px;
+  text-align: center;
+  color: #111111;
+}
+
+.checkout-remove-item-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.checkout-remove-item-btn:hover {
+  color: #dc2626;
+  border-color: #fca5a5;
+  background: #fef2f2;
+}
+
+.remove-minus-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  transition: all 0.15s ease;
+}
+
+.checkout-remove-item-btn:hover .remove-minus-icon {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.preview-item-pricing {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  min-width: 85px;
+}
+
 .preview-item-price {
   font-family: "Inter", sans-serif;
   font-weight: 600;
   font-size: 15px;
   color: #111111;
+}
+
+.preview-item-unit-price {
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  color: #888888;
+  margin-top: 3px;
+}
+
+.checkout-empty-cart-msg {
+  padding: 32px 16px;
+  text-align: center;
+  background: #fafafa;
+  border-radius: 12px;
+  border: 1px dashed #e5e7eb;
+}
+
+.checkout-empty-cart-msg p {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 12px 0;
+}
+
+.continue-shopping-link {
+  display: inline-block;
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111111;
+  text-decoration: underline;
 }
 
 /* Summary Sidebar */

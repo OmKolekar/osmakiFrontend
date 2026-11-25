@@ -4,8 +4,8 @@ export const orderApi = {
   getCheckoutSummary: (userId, addressId, couponCode, shippingMethod) =>
     apiClient.post("/api/orders/checkout-summary", { userId, addressId, couponCode, shippingMethod }),
 
-  createOrder: (userId, addressId, couponCode, shippingMethod) =>
-    apiClient.post("/api/orders/create", { userId, addressId, couponCode, shippingMethod }),
+  createOrder: (userId, addressId, couponCode, shippingMethod, paymentMethod = "online") =>
+    apiClient.post("/api/orders/create", { userId, addressId, couponCode, shippingMethod, paymentMethod }),
 
   getUserOrders: (userId) =>
     apiClient.get(`/api/orders/user?userId=${userId}`),

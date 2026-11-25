@@ -9,8 +9,21 @@ async function request(endpoint, options = {}) {
   
   const isFormData = options.body instanceof FormData;
 
+  // Automatically attach authentication credentials from active user session
+  let authHeaders = {};
+  try {
+    const saved = localStorage.getItem("osmaki_user");
+    if (saved) {
+      const u = JSON.parse(saved);
+      if (u.token) {
+        authHeaders["Authorization"] = `Bearer ${u.token}`;
+      }
+    }
+  } catch {}
+
   const headers = {
     ...(isFormData ? {} : { "Content-Type": "application/json" }),
+    ...authHeaders,
     ...options.headers,
   };
 
@@ -26,8 +39,26 @@ async function request(endpoint, options = {}) {
   const response = await fetch(url, config);
 
   if (!response.ok) {
+    if (response.status === 401) {
+      // If unauthenticated or token missing from legacy session, prompt re-login
+      try {
+        const saved = localStorage.getItem("osmaki_user");
+        if (saved) {
+          const u = JSON.parse(saved);
+          if (!u.token) {
+            localStorage.removeItem("osmaki_user");
+          }
+        }
+      } catch {}
+    }
     const errorText = await response.text();
-    throw new Error(errorText || `Request failed with status ${response.status}`);
+    let errorMessage = errorText;
+    try {
+      const parsed = JSON.parse(errorText);
+      if (parsed.message) errorMessage = parsed.message;
+      else if (parsed.error) errorMessage = parsed.error;
+    } catch {}
+    throw new Error(errorMessage || `Request failed with status ${response.status}`);
   }
 
   const contentType = response.headers.get("content-type");

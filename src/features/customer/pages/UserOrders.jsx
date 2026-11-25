@@ -81,7 +81,7 @@ export default function UserOrders() {
           <div className="orders-empty-view">
             <div className="empty-box-icon">📦</div>
             <h2>No Orders Found</h2>
-            <p>You haven't placed any orders with us yet. Start exploring our botanicals!</p>
+            <p>You haven't placed any orders with us yet. Start exploring our collection!</p>
             <Link to="/" className="browse-shop-btn">
               Browse Products
             </Link>

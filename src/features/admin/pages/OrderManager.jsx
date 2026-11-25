@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { orderApi } from "../../customer/api/orderApi";
+import { shippingApi } from "../../customer/api/shippingApi";
 import "../styles/orderManager.css";
 
 export default function OrderManager() {
@@ -20,6 +21,19 @@ export default function OrderManager() {
   // Refund input state
   const [refundReason, setRefundReason] = useState("Customer Request");
   const [submittingAction, setSubmittingAction] = useState(false);
+
+  // Shiprocket Logistics State
+  const [shippingLoading, setShippingLoading] = useState(false);
+  const [couriersList, setCouriersList] = useState([]);
+  const [selectedCourierId, setSelectedCourierId] = useState("");
+  const [pickupDate, setPickupDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split("T")[0];
+  });
+  const [shippingFeedback, setShippingFeedback] = useState("");
+  const [trackingData, setTrackingData] = useState(null);
+  const [showTrackingModal, setShowTrackingModal] = useState(false);
 
   useEffect(() => {
     fetchOrders();
@@ -113,6 +127,119 @@ export default function OrderManager() {
       alert(err.message || "Failed to update order status");
     } finally {
       setSubmittingAction(false);
+    }
+  };
+
+  // --- SHIPROCKET ACTIONS ---
+
+  const handleCreateShiprocketOrder = async (orderId) => {
+    setShippingLoading(true);
+    setShippingFeedback("");
+    try {
+      const res = await shippingApi.createShipmentOrder(orderId);
+      setShippingFeedback("✓ Shiprocket Order created successfully!");
+      // Refresh order details
+      const freshDetails = await orderApi.getOrderDetails(orderId);
+      setSelectedOrder(freshDetails);
+      setOrders((prev) => prev.map((o) => (o.id === orderId ? freshDetails : o)));
+    } catch (err) {
+      setShippingFeedback(`⚠️ ${err.message || "Failed to create Shiprocket order."}`);
+    } finally {
+      setShippingLoading(false);
+    }
+  };
+
+  const handleFetchCouriers = async (orderId) => {
+    setShippingLoading(true);
+    setShippingFeedback("");
+    try {
+      const res = await shippingApi.getOrderCouriers(orderId);
+      setCouriersList(res.courierCompanies || []);
+      if (res.courierCompanies?.length > 0) {
+        setSelectedCourierId(String(res.recommendedCourierId || res.courierCompanies[0].courierCompanyId));
+      }
+    } catch (err) {
+      setShippingFeedback(`⚠️ ${err.message || "Failed to fetch couriers."}`);
+    } finally {
+      setShippingLoading(false);
+    }
+  };
+
+  const handleAssignCourier = async (orderId) => {
+    setShippingLoading(true);
+    setShippingFeedback("");
+    try {
+      const res = await shippingApi.assignCourier(orderId, selectedCourierId ? Number(selectedCourierId) : null);
+      setShippingFeedback(`✓ AWB ${res.shipment?.awbCode || ""} assigned via ${res.shipment?.courierName || "courier"}!`);
+      const freshDetails = await orderApi.getOrderDetails(orderId);
+      setSelectedOrder(freshDetails);
+      setOrders((prev) => prev.map((o) => (o.id === orderId ? freshDetails : o)));
+      setCouriersList([]);
+    } catch (err) {
+      setShippingFeedback(`⚠️ ${err.message || "Failed to assign courier."}`);
+    } finally {
+      setShippingLoading(false);
+    }
+  };
+
+  const handleSchedulePickup = async (orderId) => {
+    setShippingLoading(true);
+    setShippingFeedback("");
+    try {
+      const res = await shippingApi.requestPickup(orderId, pickupDate);
+      setShippingFeedback(`✓ Pickup scheduled! Token: ${res.pickupTokenNumber || "Generated"}`);
+      const freshDetails = await orderApi.getOrderDetails(orderId);
+      setSelectedOrder(freshDetails);
+      setOrders((prev) => prev.map((o) => (o.id === orderId ? freshDetails : o)));
+    } catch (err) {
+      setShippingFeedback(`⚠️ ${err.message || "Failed to schedule pickup."}`);
+    } finally {
+      setShippingLoading(false);
+    }
+  };
+
+  const handlePrintLabel = async (orderId) => {
+    setShippingLoading(true);
+    try {
+      const res = await shippingApi.generateLabel(orderId);
+      if (res.labelUrl) {
+        window.open(res.labelUrl, "_blank");
+      } else {
+        alert("Shipping label URL was not returned by Shiprocket.");
+      }
+    } catch (err) {
+      alert(err.message || "Failed to generate label.");
+    } finally {
+      setShippingLoading(false);
+    }
+  };
+
+  const handlePrintInvoice = async (orderId) => {
+    setShippingLoading(true);
+    try {
+      const res = await shippingApi.generateInvoice(orderId);
+      if (res.invoiceUrl) {
+        window.open(res.invoiceUrl, "_blank");
+      } else {
+        alert("Invoice URL was not returned by Shiprocket.");
+      }
+    } catch (err) {
+      alert(err.message || "Failed to generate invoice.");
+    } finally {
+      setShippingLoading(false);
+    }
+  };
+
+  const handleTrackShipment = async (orderId) => {
+    setShippingLoading(true);
+    try {
+      const res = await shippingApi.trackShipment(orderId);
+      setTrackingData(res);
+      setShowTrackingModal(true);
+    } catch (err) {
+      alert(err.message || "Failed to retrieve tracking info.");
+    } finally {
+      setShippingLoading(false);
     }
   };
 
@@ -395,17 +522,174 @@ export default function OrderManager() {
               </div>
             </div>
 
-            {/* Shipment tracker info */}
-            {selectedOrder.shipment && (
-              <div className="modal-details-section" style={{ marginBottom: "20px" }}>
-                <h4 className="section-subtitle">Shipment Tracking details</h4>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", fontSize: "13px" }}>
-                  <div>Carrier: <strong>{selectedOrder.shipment.carrier}</strong></div>
-                  <div>Tracking: <strong>{selectedOrder.shipment.trackingNumber || "N/A"}</strong></div>
-                  <div>Status: <strong>{selectedOrder.shipment.status}</strong></div>
-                </div>
+            {/* SHIPROCKET LOGISTICS COMMAND CENTER */}
+            <div className="modal-details-section shiprocket-logistics-box" style={{ marginBottom: "20px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                <h4 className="section-subtitle" style={{ margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span>🚀</span> Shiprocket Fulfillment & Logistics
+                </h4>
+                {selectedOrder.shipment?.status && (
+                  <span className={`badge ${selectedOrder.shipment.status === 'CREATION_FAILED' ? 'badge-danger' : 'badge-info'}`} style={{ fontSize: "11px", textTransform: "uppercase" }}>
+                    {selectedOrder.shipment.status.replace(/_/g, " ")}
+                  </span>
+                )}
               </div>
-            )}
+
+              {shippingFeedback && (
+                <div style={{ padding: "8px 12px", marginBottom: "12px", borderRadius: "4px", fontSize: "12px", backgroundColor: shippingFeedback.startsWith("✓") ? "#ecfdf5" : "#fef2f2", color: shippingFeedback.startsWith("✓") ? "#065f46" : "#991b1b", border: `1px solid ${shippingFeedback.startsWith("✓") ? "#a7f3d0" : "#fecaca"}` }}>
+                  {shippingFeedback}
+                </div>
+              )}
+
+              {/* Shiprocket Meta Grid */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "10px", fontSize: "12px", padding: "12px", backgroundColor: "#f9fafb", borderRadius: "6px", marginBottom: "14px" }}>
+                <div>
+                  <span style={{ color: "#6b7280", display: "block" }}>Shiprocket Order ID</span>
+                  <strong>{selectedOrder.shipment?.shiprocketOrderId || "Not Created"}</strong>
+                </div>
+                <div>
+                  <span style={{ color: "#6b7280", display: "block" }}>Shipment ID</span>
+                  <strong>{selectedOrder.shipment?.shiprocketShipmentId || "—"}</strong>
+                </div>
+                <div>
+                  <span style={{ color: "#6b7280", display: "block" }}>Courier Partner</span>
+                  <strong>{selectedOrder.shipment?.courierName || selectedOrder.shipment?.carrier || "Pending Assignment"}</strong>
+                </div>
+                <div>
+                  <span style={{ color: "#6b7280", display: "block" }}>AWB Number</span>
+                  {selectedOrder.shipment?.awbCode ? (
+                    <a href={`https://shiprocket.co/tracking/${selectedOrder.shipment.awbCode}`} target="_blank" rel="noopener noreferrer" style={{ color: "#2563eb", fontWeight: "600", textDecoration: "underline" }}>
+                      {selectedOrder.shipment.awbCode} ↗
+                    </a>
+                  ) : (
+                    <strong>—</strong>
+                  )}
+                </div>
+                {selectedOrder.shipment?.pickupTokenNumber && (
+                  <div>
+                    <span style={{ color: "#6b7280", display: "block" }}>Pickup Token</span>
+                    <strong>{selectedOrder.shipment.pickupTokenNumber}</strong>
+                  </div>
+                )}
+              </div>
+
+              {/* Error message display if failed */}
+              {selectedOrder.shipment?.errorMessage && (
+                <div style={{ padding: "8px 12px", marginBottom: "12px", borderRadius: "4px", fontSize: "12px", backgroundColor: "#fef2f2", color: "#991b1b", border: "1px solid #fecaca" }}>
+                  <strong>Shiprocket Error:</strong> {selectedOrder.shipment.errorMessage}
+                </div>
+              )}
+
+              {/* Dynamic Interactive Logistics Controls */}
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" }}>
+                {/* 1. Create or Retry Shiprocket Order */}
+                {(!selectedOrder.shipment?.shiprocketOrderId || selectedOrder.shipment?.status === "CREATION_FAILED") && (
+                  <button
+                    disabled={shippingLoading}
+                    onClick={() => handleCreateShiprocketOrder(selectedOrder.id)}
+                    className="btn-primary-action"
+                    style={{ fontSize: "12px", padding: "8px 14px" }}
+                  >
+                    {shippingLoading ? "Contacting Shiprocket..." : selectedOrder.shipment?.status === "CREATION_FAILED" ? "🔄 Retry Shiprocket Order" : "🚀 Create Shiprocket Order"}
+                  </button>
+                )}
+
+                {/* 2. Assign Courier & Generate AWB */}
+                {selectedOrder.shipment?.shiprocketShipmentId && !selectedOrder.shipment?.awbCode && (
+                  <>
+                    {couriersList.length === 0 ? (
+                      <button
+                        disabled={shippingLoading}
+                        onClick={() => handleFetchCouriers(selectedOrder.id)}
+                        className="btn-primary-action"
+                        style={{ fontSize: "12px", padding: "8px 14px", backgroundColor: "#0284c7" }}
+                      >
+                        {shippingLoading ? "Checking Rates..." : "📦 Select Courier & Generate AWB"}
+                      </button>
+                    ) : (
+                      <div style={{ display: "flex", gap: "8px", alignItems: "center", width: "100%", marginTop: "8px", padding: "10px", backgroundColor: "#f0f9ff", borderRadius: "6px" }}>
+                        <select
+                          value={selectedCourierId}
+                          onChange={(e) => setSelectedCourierId(e.target.value)}
+                          className="filter-select-field"
+                          style={{ flex: 1, padding: "6px 10px", fontSize: "12px" }}
+                        >
+                          {couriersList.map((c) => (
+                            <option key={c.courierCompanyId} value={c.courierCompanyId}>
+                              {c.courierName} — ₹{c.rate} (~{c.estimatedDeliveryDays || c.etd || "2-3"} days) {c.rating ? `★${c.rating}` : ""}
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          disabled={shippingLoading}
+                          onClick={() => handleAssignCourier(selectedOrder.id)}
+                          className="btn-primary-action"
+                          style={{ fontSize: "12px", padding: "8px 14px", whiteSpace: "nowrap" }}
+                        >
+                          {shippingLoading ? "Assigning..." : "Confirm & Generate AWB"}
+                        </button>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* 3. Schedule Pickup (when AWB is assigned and no pickup scheduled) */}
+                {selectedOrder.shipment?.awbCode && !selectedOrder.shipment?.pickupTokenNumber && (
+                  <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                    <input
+                      type="date"
+                      value={pickupDate}
+                      onChange={(e) => setPickupDate(e.target.value)}
+                      style={{ padding: "6px 10px", border: "1px solid #d1d5db", borderRadius: "4px", fontSize: "12px" }}
+                    />
+                    <button
+                      disabled={shippingLoading}
+                      onClick={() => handleSchedulePickup(selectedOrder.id)}
+                      className="btn-primary-action"
+                      style={{ fontSize: "12px", padding: "8px 14px", backgroundColor: "#4f46e5" }}
+                    >
+                      {shippingLoading ? "Scheduling..." : "🚚 Schedule Pickup"}
+                    </button>
+                  </div>
+                )}
+
+                {/* 4. Print Label */}
+                {selectedOrder.shipment?.shiprocketShipmentId && (
+                  <button
+                    disabled={shippingLoading}
+                    onClick={() => handlePrintLabel(selectedOrder.id)}
+                    className="btn-cancel"
+                    style={{ fontSize: "12px", padding: "8px 14px", border: "1px solid #111" }}
+                  >
+                    🏷️ Print Shipping Label
+                  </button>
+                )}
+
+                {/* 5. Print Invoice */}
+                {selectedOrder.shipment?.shiprocketOrderId && (
+                  <button
+                    disabled={shippingLoading}
+                    onClick={() => handlePrintInvoice(selectedOrder.id)}
+                    className="btn-cancel"
+                    style={{ fontSize: "12px", padding: "8px 14px" }}
+                  >
+                    🧾 Commercial Invoice
+                  </button>
+                )}
+
+                {/* 6. Live Carrier Tracking */}
+                {selectedOrder.shipment?.awbCode && (
+                  <button
+                    disabled={shippingLoading}
+                    onClick={() => handleTrackShipment(selectedOrder.id)}
+                    className="btn-cancel"
+                    style={{ fontSize: "12px", padding: "8px 14px", backgroundColor: "#f3f4f6" }}
+                  >
+                    📍 Live Tracking Checkpoints
+                  </button>
+                )}
+              </div>
+            </div>
 
             {/* Items Summary Table */}
             <h4 className="section-subtitle">Purchased Items</h4>
@@ -600,6 +884,55 @@ export default function OrderManager() {
                 <strong style={{ color: "#b91c1c", display: "block" }}>Order Cancelled</strong>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Real-time Shiprocket Tracking Modal */}
+      {showTrackingModal && (
+        <div className="modal-overlay" onClick={() => setShowTrackingModal(false)} style={{ zIndex: 1100 }}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "600px" }}>
+            <div className="modal-header-row">
+              <h3 className="modal-title" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <span>📍</span> Real-Time Shipment Tracking
+              </h3>
+              <button className="btn-close-modal" onClick={() => setShowTrackingModal(false)}>×</button>
+            </div>
+            
+            <div style={{ margin: "16px 0", padding: "12px", backgroundColor: "#f9fafb", borderRadius: "6px", fontSize: "13px" }}>
+              <div>Carrier: <strong>{trackingData?.tracking?.carrierName || trackingData?.shipment?.carrier || "Shiprocket"}</strong></div>
+              <div>AWB Number: <strong>{trackingData?.shipment?.awbCode || trackingData?.tracking?.awbCode || "—"}</strong></div>
+              <div>Current Status: <strong style={{ color: "#2563eb" }}>{trackingData?.tracking?.currentStatus || trackingData?.shipment?.status || "In Process"}</strong></div>
+              {trackingData?.tracking?.edd && <div>Estimated Delivery: <strong>{trackingData.tracking.edd}</strong></div>}
+            </div>
+
+            <h4 style={{ fontSize: "14px", margin: "14px 0 8px 0" }}>Activity Checkpoints</h4>
+            <div style={{ maxHeight: "250px", overflowY: "auto", border: "1px solid #e5e7eb", borderRadius: "6px", padding: "10px" }}>
+              {trackingData?.tracking?.activities?.length > 0 ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                  {trackingData.tracking.activities.map((act, i) => (
+                    <div key={i} style={{ display: "flex", gap: "10px", fontSize: "12px", borderBottom: i < trackingData.tracking.activities.length - 1 ? "1px solid #f3f4f6" : "none", paddingBottom: "8px" }}>
+                      <span style={{ color: "#2563eb", fontWeight: "bold" }}>●</span>
+                      <div>
+                        <strong>{act.activity || act.status}</strong>
+                        {act.location && <span style={{ color: "#6b7280" }}> — {act.location}</span>}
+                        <div style={{ fontSize: "11px", color: "#9ca3af" }}>{act.date}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ margin: 0, fontSize: "12px", color: "#6b7280" }}>
+                  Package is currently awaiting courier pickup scan. Detailed checkpoints will appear as the courier scans the parcel.
+                </p>
+              )}
+            </div>
+
+            <div style={{ marginTop: "16px", textAlign: "right" }}>
+              <button onClick={() => setShowTrackingModal(false)} className="btn-primary-action" style={{ fontSize: "12px", padding: "6px 16px" }}>
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

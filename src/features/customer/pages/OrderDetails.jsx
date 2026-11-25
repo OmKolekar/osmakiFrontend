@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { orderApi } from "../api/orderApi";
+import { shippingApi } from "../api/shippingApi";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import "../styles/orderDetails.css";
@@ -15,6 +16,24 @@ export default function OrderDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [cancelling, setCancelling] = useState(false);
+
+  // Live Shiprocket Tracking State
+  const [showTrackingModal, setShowTrackingModal] = useState(false);
+  const [trackingData, setTrackingData] = useState(null);
+  const [trackingLoading, setTrackingLoading] = useState(false);
+
+  const handleTrackLive = async () => {
+    setTrackingLoading(true);
+    try {
+      const res = await shippingApi.trackShipment(orderId);
+      setTrackingData(res);
+      setShowTrackingModal(true);
+    } catch (err) {
+      alert(err.message || "Failed to load live tracking details.");
+    } finally {
+      setTrackingLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!user) {
@@ -202,20 +221,53 @@ export default function OrderDetails() {
         {/* Shipment Tracker Details (No Print) */}
         {order.shipment && !["CANCELLED", "REFUNDED", "PAYMENT_FAILED"].includes(order.status) && (
           <div className="shipment-tracker-card no-print">
-            <h3 className="card-sub-title">Delivery & Tracking</h3>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexWrap: "wrap", gap: "10px" }}>
+              <h3 className="card-sub-title" style={{ margin: 0 }}>Delivery & Tracking</h3>
+              {order.shipment.awbCode && (
+                <button
+                  type="button"
+                  disabled={trackingLoading}
+                  onClick={handleTrackLive}
+                  style={{
+                    padding: "6px 14px",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    backgroundColor: "#111",
+                    color: "#fff",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    border: "none",
+                  }}
+                >
+                  {trackingLoading ? "Fetching..." : "📍 Track Package Live"}
+                </button>
+              )}
+            </div>
+
             <div className="shipment-details-grid">
               <div className="shipment-col">
                 <span>Shipping Partner:</span>
-                <strong>{order.shipment.carrier}</strong>
+                <strong>{order.shipment.courierName || order.shipment.carrier}</strong>
               </div>
               <div className="shipment-col">
-                <span>Tracking Number:</span>
-                <strong>{order.shipment.trackingNumber || "Assigning tracking..."}</strong>
+                <span>Tracking / AWB:</span>
+                {order.shipment.awbCode ? (
+                  <a
+                    href={`https://shiprocket.co/tracking/${order.shipment.awbCode}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "#2563eb", fontWeight: "600", textDecoration: "underline" }}
+                  >
+                    {order.shipment.awbCode} ↗
+                  </a>
+                ) : (
+                  <strong>{order.shipment.trackingNumber || "Assigning tracking..."}</strong>
+                )}
               </div>
               <div className="shipment-col">
                 <span>Estimated Delivery:</span>
                 <strong>
-                  {order.shipment.estimatedDelivery 
+                  {order.shipment.estimatedDelivery
                     ? new Date(order.shipment.estimatedDelivery).toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })
                     : "Standard Timeline"
                   }
@@ -346,10 +398,61 @@ export default function OrderDetails() {
 
         {/* Invoice Footer disclaimer */}
         <div className="invoice-disclaimer print-only">
-          <p>Thank you for purchasing with 𝓞SMAKÌ Botanicals.</p>
+          <p>Thank you for purchasing with OSMAKÌ.</p>
           <p>This is a computer-generated invoice and does not require a physical signature.</p>
         </div>
       </div>
+
+      {/* Customer Live Tracking Modal */}
+      {showTrackingModal && (
+        <div className="modal-overlay" onClick={() => setShowTrackingModal(false)} style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.6)", zIndex: 1200, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ backgroundColor: "#fff", borderRadius: "8px", maxWidth: "560px", width: "100%", padding: "24px", maxHeight: "90vh", overflowY: "auto" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "700" }}>Live Package Tracking</h3>
+              <button onClick={() => setShowTrackingModal(false)} style={{ background: "none", border: "none", fontSize: "20px", cursor: "pointer" }}>×</button>
+            </div>
+
+            <div style={{ padding: "12px 16px", backgroundColor: "#f9fafb", borderRadius: "6px", marginBottom: "16px", fontSize: "13px" }}>
+              <div style={{ marginBottom: "4px" }}>Carrier: <strong>{trackingData?.tracking?.carrierName || trackingData?.shipment?.carrier || "Shiprocket Express"}</strong></div>
+              <div style={{ marginBottom: "4px" }}>Tracking AWB: <strong>{trackingData?.shipment?.awbCode || trackingData?.tracking?.awbCode || "—"}</strong></div>
+              <div>Current Status: <strong style={{ color: "#2563eb" }}>{trackingData?.tracking?.currentStatus || trackingData?.shipment?.status}</strong></div>
+              {trackingData?.tracking?.edd && <div style={{ marginTop: "4px" }}>Estimated Delivery: <strong>{trackingData.tracking.edd}</strong></div>}
+            </div>
+
+            <h4 style={{ margin: "0 0 10px 0", fontSize: "14px" }}>Transit Milestones</h4>
+            <div style={{ border: "1px solid #e5e7eb", borderRadius: "6px", padding: "12px", maxHeight: "240px", overflowY: "auto" }}>
+              {trackingData?.tracking?.activities?.length > 0 ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  {trackingData.tracking.activities.map((act, i) => (
+                    <div key={i} style={{ display: "flex", gap: "10px", fontSize: "12px" }}>
+                      <span style={{ color: "#2563eb", fontWeight: "bold" }}>●</span>
+                      <div>
+                        <strong>{act.activity || act.status}</strong>
+                        {act.location && <span style={{ color: "#6b7280" }}> — {act.location}</span>}
+                        <div style={{ fontSize: "11px", color: "#9ca3af" }}>{act.date}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ margin: 0, fontSize: "12px", color: "#6b7280" }}>
+                  Your shipment has been registered with the courier. Tracking scans will update automatically as the package moves across transport hubs.
+                </p>
+              )}
+            </div>
+
+            <div style={{ marginTop: "16px", textAlign: "right" }}>
+              <button
+                type="button"
+                onClick={() => setShowTrackingModal(false)}
+                style={{ padding: "8px 18px", backgroundColor: "#000", color: "#fff", borderRadius: "4px", border: "none", cursor: "pointer", fontSize: "13px" }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

@@ -5,13 +5,14 @@ import { useCart } from "../context/CartContext";
 import { orderApi } from "../api/orderApi";
 import { paymentApi } from "../api/paymentApi";
 import { couponApi } from "../api/couponApi";
+import { shippingApi } from "../api/shippingApi";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import "../styles/checkout.css";
 
 export default function Checkout() {
   const { user } = useAuth();
-  const { cartItems, cartTotal, clearCart } = useCart();
+  const { cartItems, cartTotal, clearCart, removeFromCart, updateQuantity } = useCart();
   const navigate = useNavigate();
 
   // Redirect if not logged in
@@ -51,13 +52,13 @@ export default function Checkout() {
   const [couponError, setCouponError] = useState("");
   const [couponLoading, setCouponLoading] = useState(false);
 
-  // Pricing Summary State
+  // Pricing Summary State (Flat ₹50 Delivery Fee)
   const [summary, setSummary] = useState({
     subtotal: cartTotal,
-    shippingCharge: cartTotal >= 1500 ? 0 : 150,
+    shippingCharge: cartTotal > 0 ? 50 : 0,
     discount: 0,
     tax: Math.round(cartTotal * 0.05 * 100) / 100,
-    finalAmount: cartTotal + (cartTotal >= 1500 ? 0 : 150) + Math.round(cartTotal * 0.05 * 100) / 100,
+    finalAmount: cartTotal + (cartTotal > 0 ? 50 : 0) + Math.round(cartTotal * 0.05 * 100) / 100,
   });
 
   // UI States
@@ -80,8 +81,40 @@ export default function Checkout() {
   useEffect(() => {
     if (user && cartItems.length > 0) {
       calculateSummary();
+    } else if (cartItems.length === 0) {
+      setSummary({
+        subtotal: 0,
+        shippingCharge: 0,
+        discount: 0,
+        tax: 0,
+        finalAmount: 0,
+      });
     }
   }, [selectedAddressId, shippingMethod, appliedCoupon, cartItems]);
+
+  const handleRemoveItem = async (itemId) => {
+    try {
+      setError("");
+      await removeFromCart(itemId);
+    } catch (err) {
+      console.error("Failed to remove item from checkout:", err);
+      setError("Failed to remove item. Please try again.");
+    }
+  };
+
+  const handleUpdateQty = async (itemId, newQty) => {
+    try {
+      setError("");
+      if (newQty <= 0) {
+        await removeFromCart(itemId);
+      } else {
+        await updateQuantity(itemId, newQty);
+      }
+    } catch (err) {
+      console.error("Failed to update item quantity:", err);
+      setError("Failed to update quantity. Please try again.");
+    }
+  };
 
   const fetchAddresses = async () => {
     try {
@@ -193,17 +226,32 @@ export default function Checkout() {
     setError("");
 
     try {
-      // 1. Create Pending Order
+      // 1. If Cash on Delivery, place confirmed COD order directly
+      if (paymentMethod === "cod") {
+        const placement = await orderApi.createOrder(
+          user.id,
+          selectedAddressId,
+          appliedCoupon ? appliedCoupon.code : null,
+          shippingMethod,
+          "COD"
+        );
+        clearCart();
+        navigate(`/order/${placement.orderId}`, { state: { justPlaced: true } });
+        return;
+      }
+
+      // 2. Create Pending Order for Online Payment (Razorpay / Mock)
       const placement = await orderApi.createOrder(
         user.id,
         selectedAddressId,
         appliedCoupon ? appliedCoupon.code : null,
-        shippingMethod
+        shippingMethod,
+        "online"
       );
 
       const { orderId } = placement;
 
-      // 2. Create Payment Request
+      // 3. Create Payment Request
       const gatewayResponse = await paymentApi.createPaymentRequest(orderId);
 
       if (gatewayResponse.isMock) {
@@ -221,7 +269,7 @@ export default function Checkout() {
           key: gatewayResponse.keyId,
           amount: Math.round(parseFloat(gatewayResponse.amount) * 100), // paise
           currency: "INR",
-          name: "OSMAKÌ Botanicals",
+          name: "OSMAKÌ",
           description: `Order Purchase #${orderId.substring(0, 8)}`,
           order_id: gatewayResponse.gatewayOrderId,
           handler: async function (response) {
@@ -331,7 +379,25 @@ export default function Checkout() {
           <div className="checkout-forms">
             <h1 className="checkout-main-title">Shipping & Payment</h1>
 
-            {error && <div className="checkout-error-banner">{error}</div>}
+            {error && (
+              <div className="checkout-error-banner" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+                <span>
+                  {(() => {
+                    try {
+                      const p = JSON.parse(error);
+                      return p.message || p.error || error;
+                    } catch {
+                      return error;
+                    }
+                  })()}
+                </span>
+                {String(error).toLowerCase().includes("stock") && (
+                  <Link to="/cart" style={{ color: "#b91c1c", fontWeight: 700, textDecoration: "underline", fontSize: "13px" }}>
+                    Modify Cart Quantity →
+                  </Link>
+                )}
+              </div>
+            )}
 
             {/* Section 1: Address Manager */}
             <section className="checkout-section">
@@ -464,52 +530,10 @@ export default function Checkout() {
               )}
             </section>
 
-            {/* Section 2: Shipping Method */}
+            {/* Section 2: Payment Method */}
             <section className="checkout-section">
-              <h2 className="section-title">2. Shipping Method</h2>
-              <div className="shipping-options-grid">
-                <label className={`shipping-option-card ${shippingMethod === "standard" ? "selected" : ""}`}>
-                  <input
-                    type="radio"
-                    name="shippingMethod"
-                    value="standard"
-                    checked={shippingMethod === "standard"}
-                    onChange={() => setShippingMethod("standard")}
-                    className="shipping-radio"
-                  />
-                  <div className="shipping-option-info">
-                    <div className="shipping-option-header">
-                      <span className="option-name">Standard Delivery</span>
-                      <span className="option-price">{summary.subtotal >= 1500 ? "FREE" : "₹150"}</span>
-                    </div>
-                    <span className="option-duration">Delivered in 4 - 6 business days.</span>
-                  </div>
-                </label>
-
-                <label className={`shipping-option-card ${shippingMethod === "express" ? "selected" : ""}`}>
-                  <input
-                    type="radio"
-                    name="shippingMethod"
-                    value="express"
-                    checked={shippingMethod === "express"}
-                    onChange={() => setShippingMethod("express")}
-                    className="shipping-radio"
-                  />
-                  <div className="shipping-option-info">
-                    <div className="shipping-option-header">
-                      <span className="option-name">Express Dispatch</span>
-                      <span className="option-price">₹250</span>
-                    </div>
-                    <span className="option-duration">Delivered in 1 - 2 business days.</span>
-                  </div>
-                </label>
-              </div>
-            </section>
-
-            {/* Section 3: Payment Method */}
-            <section className="checkout-section">
-              <h2 className="section-title">3. Payment Method</h2>
-              <div className="payment-options-grid">
+              <h2 className="section-title">2. Payment Method</h2>
+              <div className="payment-options-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "12px" }}>
                 <label className={`payment-option-card ${paymentMethod === "online" ? "selected" : ""}`}>
                   <input
                     type="radio"
@@ -520,32 +544,104 @@ export default function Checkout() {
                     className="payment-radio"
                   />
                   <div className="payment-option-info">
-                    <span className="payment-name">UPI / Card / NetBanking / Wallet</span>
-                    <span className="payment-desc">Pay securely using UPI, Debit/Credit Card, or Wallets</span>
+                    <span className="payment-name">UPI / Card / NetBanking</span>
+                    <span className="payment-desc">Pay securely using UPI, Card, or Wallets via Razorpay</span>
+                  </div>
+                </label>
+
+                <label className={`payment-option-card ${paymentMethod === "cod" ? "selected" : ""}`}>
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="cod"
+                    checked={paymentMethod === "cod"}
+                    onChange={() => setPaymentMethod("cod")}
+                    className="payment-radio"
+                  />
+                  <div className="payment-option-info">
+                    <span className="payment-name">Cash on Delivery (COD)</span>
+                    <span className="payment-desc">Pay cash or scan UPI upon doorstep delivery</span>
                   </div>
                 </label>
               </div>
             </section>
 
-            {/* Section 4: Cart Items Review */}
+            {/* Section 3: Cart Items Review */}
             <section className="checkout-section">
-              <h2 className="section-title">4. Review Cart Items</h2>
-              <div className="checkout-items-preview">
-                {cartItems.map((item) => (
-                  <div key={item.id} className="checkout-preview-item">
-                    <img src={item.image} alt={item.name} className="preview-item-img" />
-                    <div className="preview-item-info">
-                      <h4 className="preview-item-name">{item.name}</h4>
-                      <p className="preview-item-variant">
-                        {item.selectedSize && <span>Size: <strong>{item.selectedSize}</strong></span>}
-                        {item.selectedColor && <span>Color: <strong>{item.selectedColor}</strong></span>}
-                      </p>
-                      <p className="preview-item-qty">Qty: {item.quantity}</p>
-                    </div>
-                    <span className="preview-item-price">₹{item.price * item.quantity}</span>
-                  </div>
-                ))}
+              <div className="checkout-section-header-row">
+                <h2 className="section-title" style={{ margin: 0 }}>3. Review Cart Items</h2>
+                {cartItems.length > 0 && (
+                  <span className="checkout-items-count-badge">
+                    {cartItems.length} {cartItems.length === 1 ? "product" : "products"}
+                  </span>
+                )}
               </div>
+
+              {cartItems.length === 0 ? (
+                <div className="checkout-empty-cart-msg">
+                  <p>Your shopping cart is currently empty.</p>
+                  <Link to="/" className="continue-shopping-link">
+                    Explore Products →
+                  </Link>
+                </div>
+              ) : (
+                <div className="checkout-items-preview">
+                  {cartItems.map((item) => (
+                    <div key={item.id} className="checkout-preview-item">
+                      <img src={item.image} alt={item.name} className="preview-item-img" />
+                      <div className="preview-item-info">
+                        <h4 className="preview-item-name">{item.name}</h4>
+                        <p className="preview-item-variant">
+                          {item.selectedSize && <span>Size: <strong>{item.selectedSize}</strong></span>}
+                          {item.selectedColor && <span>Color: <strong>{item.selectedColor}</strong></span>}
+                        </p>
+                        
+                        <div className="preview-item-controls">
+                          {/* Minus/Plus Quantity Stepper */}
+                          <div className="preview-qty-stepper">
+                            <button
+                              type="button"
+                              className="checkout-qty-btn"
+                              onClick={() => handleUpdateQty(item.id, item.quantity - 1)}
+                              title="Decrease quantity or remove"
+                              aria-label="Decrease quantity"
+                            >
+                              −
+                            </button>
+                            <span className="checkout-qty-val">{item.quantity}</span>
+                            <button
+                              type="button"
+                              className="checkout-qty-btn"
+                              onClick={() => handleUpdateQty(item.id, item.quantity + 1)}
+                              title="Increase quantity"
+                              aria-label="Increase quantity"
+                            >
+                              +
+                            </button>
+                          </div>
+
+                          {/* Dedicated - Remove Button to immediately remove/unselect product */}
+                          <button
+                            type="button"
+                            className="checkout-remove-item-btn"
+                            onClick={() => handleRemoveItem(item.id)}
+                            title="Remove from buying"
+                          >
+                            <span className="remove-minus-icon">−</span> Remove
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="preview-item-pricing">
+                        <span className="preview-item-price">₹{item.price * item.quantity}</span>
+                        {item.quantity > 1 && (
+                          <span className="preview-item-unit-price">₹{item.price} each</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
           </div>
 
@@ -601,8 +697,11 @@ export default function Checkout() {
                   </div>
                 )}
                 <div className="summary-line">
-                  <span>Shipping</span>
-                  <span>{summary.shippingCharge === 0 ? "Free" : `₹${summary.shippingCharge}`}</span>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                    <span>Delivery Charges</span>
+                    <span style={{ fontSize: "11px", color: "#71717a", fontWeight: "400" }}>4 - 6 business days</span>
+                  </div>
+                  <span>₹{summary.shippingCharge || 50}</span>
                 </div>
                 <div className="summary-line">
                   <span>Estimated Tax (5%)</span>
@@ -617,10 +716,10 @@ export default function Checkout() {
               <button
                 type="button"
                 onClick={handlePlaceOrder}
-                disabled={loadingOrder || loadingSummary || showAddressForm}
+                disabled={loadingOrder || loadingSummary || showAddressForm || cartItems.length === 0}
                 className="place-order-cta"
               >
-                {loadingOrder ? "Processing..." : `Place Order (₹${summary.finalAmount})`}
+                {loadingOrder ? "Processing..." : cartItems.length === 0 ? "Cart is Empty" : `Place Order (₹${summary.finalAmount})`}
               </button>
               
               <Link to="/cart" className="back-to-cart-link">

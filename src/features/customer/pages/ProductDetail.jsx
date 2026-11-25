@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import { useCart } from "../context/CartContext";
@@ -7,6 +7,7 @@ import { useProductDetail } from "../hooks/useProductDetail";
 import "../styles/productDetail.css";
 
 export default function ProductDetail() {
+  const navigate = useNavigate();
   const { addToCart } = useCart();
   const { id } = useParams();
   const { product, loading, error } = useProductDetail(id);
@@ -204,6 +205,12 @@ export default function ProductDetail() {
 
     addToCart(cartProduct, quantity);
     showToast(`Added ${quantity} × ${product.name} ${selectedSize ? `(${selectedSize})` : ""} to Bag ✓`);
+  };
+
+  // Buy Now handler: adds to bag and directs straight to checkout
+  const handleBuyNow = () => {
+    handleAddToCart();
+    navigate("/checkout");
   };
 
   return (
@@ -416,7 +423,7 @@ export default function ProductDetail() {
                 </div>
               )}
 
-              {/* Purchase Controls Row */}
+              {/* Purchase Controls Row: Buy Now (First & Larger), Add to Cart (Second & Smaller) */}
               <div className="spec-purchase-actions-row">
                 <div className="quantity-stepper">
                   <button
@@ -438,21 +445,37 @@ export default function ProductDetail() {
                   </button>
                 </div>
 
+                {/* 1. Primary Buy Button (First & Larger in size) */}
+                <button
+                  type="button"
+                  onClick={handleBuyNow}
+                  className="spec-buy-now-btn"
+                  title="Buy Now"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                  </svg>
+                  <span>
+                    BUY NOW — ₹{((discountPrice > 0 ? discountPrice : basePrice) * quantity).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                  </span>
+                </button>
+
+                {/* 2. Add to Cart Button (Second & Smaller in size) */}
                 <button
                   type="button"
                   onClick={handleAddToCart}
                   className="spec-add-to-bag-btn"
+                  title="Add to Cart"
                 >
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
                     <line x1="3" y1="6" x2="21" y2="6"></line>
                     <path d="M16 10a4 4 0 0 1-8 0"></path>
                   </svg>
-                  <span>
-                    ADD TO BAG — ₹{((discountPrice > 0 ? discountPrice : basePrice) * quantity).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-                  </span>
+                  <span>ADD TO CART</span>
                 </button>
 
+                {/* 3. Wishlist Toggle */}
                 <button
                   type="button"
                   onClick={handleToggleWishlist}
@@ -478,6 +501,7 @@ export default function ProductDetail() {
                 onClick={() => {
                   handleAddToCart();
                   showToast("Proceeding to Express Checkout...");
+                  navigate("/checkout");
                 }}
                 className="spec-express-checkout-btn"
               >
