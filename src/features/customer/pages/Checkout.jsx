@@ -52,13 +52,13 @@ export default function Checkout() {
   const [couponError, setCouponError] = useState("");
   const [couponLoading, setCouponLoading] = useState(false);
 
-  // Pricing Summary State (Flat ₹50 Delivery Fee)
+  // Pricing Summary State (Flat ₹50 Delivery Fee, Tax Included in Product Price)
   const [summary, setSummary] = useState({
     subtotal: cartTotal,
     shippingCharge: cartTotal > 0 ? 50 : 0,
     discount: 0,
-    tax: Math.round(cartTotal * 0.05 * 100) / 100,
-    finalAmount: cartTotal + (cartTotal > 0 ? 50 : 0) + Math.round(cartTotal * 0.05 * 100) / 100,
+    tax: 0,
+    finalAmount: cartTotal + (cartTotal > 0 ? 50 : 0),
   });
 
   // UI States
@@ -703,10 +703,12 @@ export default function Checkout() {
                   </div>
                   <span>₹{summary.shippingCharge || 50}</span>
                 </div>
-                <div className="summary-line">
-                  <span>Estimated Tax (5%)</span>
-                  <span>₹{summary.tax}</span>
-                </div>
+                {summary.tax > 0 && (
+                  <div className="summary-line">
+                    <span>Estimated Tax</span>
+                    <span>₹{summary.tax}</span>
+                  </div>
+                )}
                 <div className="summary-line total">
                   <span>Total</span>
                   <span>₹{summary.finalAmount}</span>

@@ -384,10 +384,12 @@ export default function OrderDetails() {
                 <span>Shipping</span>
                 <span>{order.shippingCharge === 0 ? "Free" : `₹${order.shippingCharge}`}</span>
               </div>
-              <div className="totals-row">
-                <span>Estimated Tax (5%)</span>
-                <span>₹{order.tax}</span>
-              </div>
+              {order.tax > 0 && (
+                <div className="totals-row">
+                  <span>Estimated Tax</span>
+                  <span>₹{order.tax}</span>
+                </div>
+              )}
               <div className="totals-row grand-total">
                 <span>Grand Total</span>
                 <span>₹{order.finalAmount}</span>

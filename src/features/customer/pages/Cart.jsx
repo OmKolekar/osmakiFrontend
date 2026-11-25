@@ -8,9 +8,9 @@ export default function Cart() {
   const navigate = useNavigate();
   const { cartItems, updateQuantity, removeFromCart, cartTotal } = useCart();
 
-  const tax = Math.round(cartTotal * 0.05); // 5% mock tax
-  const shipping = cartTotal > 1500 || cartTotal === 0 ? 0 : 150; // free shipping over 1500
-  const grandTotal = cartTotal + tax + shipping;
+  const tax = 0; // All prices inclusive of taxes
+  const shipping = cartTotal === 0 ? 0 : 50; // Flat ₹50 delivery
+  const grandTotal = cartTotal + shipping;
 
   if (cartItems.length === 0) {
     return (
@@ -137,10 +137,12 @@ export default function Cart() {
                 <span>{shipping === 0 ? "Free" : `₹${shipping}`}</span>
               </div>
 
-              <div className="summary-row">
-                <span>Estimated Tax (5%)</span>
-                <span>₹{tax}</span>
-              </div>
+              {tax > 0 && (
+                <div className="summary-row">
+                  <span>Estimated Tax</span>
+                  <span>₹{tax}</span>
+                </div>
+              )}
 
               <div className="summary-row total">
                 <span>Total</span>

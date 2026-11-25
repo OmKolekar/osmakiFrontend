@@ -745,10 +745,12 @@ export default function OrderManager() {
                 <span>Shipping:</span>
                 <strong>{parseFloat(selectedOrder.shippingCharge) === 0 ? "Free" : `₹${selectedOrder.shippingCharge}`}</strong>
               </div>
-              <div className="totals-line">
-                <span>Estimated Tax (5%):</span>
-                <strong>₹{selectedOrder.tax}</strong>
-              </div>
+              {parseFloat(selectedOrder.tax || 0) > 0 && (
+                <div className="totals-line">
+                  <span>Estimated Tax:</span>
+                  <strong>₹{selectedOrder.tax}</strong>
+                </div>
+              )}
               <div className="totals-line grand">
                 <span>Grand Total:</span>
                 <strong>₹{selectedOrder.finalAmount}</strong>
